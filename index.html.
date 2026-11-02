@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PINZY</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#f5f8ff;color:#173b69}
+header{background:#1769d2;color:white;padding:18px;position:sticky;top:0;z-index:5}
+.logo{font-size:30px;font-weight:bold}
+input{width:100%;padding:13px;border:0;border-radius:25px;margin-top:12px}
+main{padding:12px}
+h2{font-size:19px}
+#feed{columns:2;column-gap:12px}
+.post{break-inside:avoid;margin-bottom:15px;background:white;border-radius:12px;overflow:hidden}
+.post img{width:100%;display:block}
+.post p{padding:0 9px;font-size:13px}
+.actions{display:flex;justify-content:space-around;padding:10px}
+button{border:0;background:#1769d2;color:white;padding:11px;border-radius:20px}
+.actions button{background:#edf4ff;color:#1769d2}
+nav{position:fixed;bottom:0;background:white;width:100%;display:flex;justify-content:space-around;padding:13
