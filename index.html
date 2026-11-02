@@ -1,32 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pinzy — Sua inspiração</title>
 
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7ff;color:#172554}
+header{background:white;padding:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:2;box-shadow:0 2px 10px #dbeafe}
+.logo{font-size:28px;font-weight:bold;color:#1769ff}
+input{padding:13px;border:0;border-radius:25px;background:#eef3ff;font-size:15px}
+#busca{flex:1;min-width:130px}
+button{padding:12px 15px;border:0;border-radius:25px;background:#1769ff;color:white;font-weight:bold;cursor:pointer}
+main{padding:16px}
+h1{font-size:25px}
+#galeria{columns:2;column-gap:12px}
+.card{display:inline-block;width:100%;break-inside:avoid;margin-bottom:14px;background:white;border-radius:14px;overflow:hidden;box-shadow:0 3px 10px #dbeafe}
+.card img{width:100%;display:block;min-height:100px}
+.info{padding:10px}
+.info p{font-weight:bold;margin:0 0 10px}
+.curtir{background:#e8efff;color:#1769ff}
+.vazio{text-align:center;padding:25px;color:#64748b}
+footer{text-align:center;padding:20px;color:#64748b}
+@media(min-width:700px){#galeria{columns:4}}
+@media(min-width:1100px){#galeria{columns:5}}
+</style>
+</head>
 
+<body>
+<header>
+  <div class="logo">💙 Pinzy</div>
+  <input id="busca" placeholder="🔍 Buscar inspirações..." oninput="filtrar()">
+  <button onclick="document.getElementById('arquivo').click()">+ Publicar</button>
+  <input id="arquivo" type="file" accept="image/*" multiple hidden>
+</header>
 
+<main>
+  <h1>Sua inspiração. Seu mundo. ✨</h1>
+  <p>Descubra ideias, encontre inspiração e explore novas imagens!</p>
+  <div id="galeria"></div>
+  <p id="mensagem" class="vazio" hidden>Nenhuma foto encontrada.</p>
+</main>
 
+<footer>Feito com 💙 por Pinzy</footer>
 
+<script>
+const fotos=[
+["Natureza","photo-1470252649378-9c29740c9fa8"],
+["Praia paradisíaca","photo-1507525428034-b723cf961d3e"],
+["Flores bonitas","photo-1490750967868-88aa4486c946"],
+["Montanhas","photo-1464822759023-fed622ff2c3b"],
+["Moda e estilo","photo-1483985988355-763728e1935b"],
+["Café","photo-1445116572660-236099ec97a0"],
+["Paisagem","photo-1470770841072-f978cf4d019e"],
+["Arquitetura","photo-1487958449943-2429e8be8625"],
+["Gatos fofos","photo-1514888286974-6c03e2ca1dba"],
+["Decoração","photo-1616486338812-3dadae4b4ace"],
+["Comida deliciosa","photo-1540189549336-e6e99c3679fe"],
+["Cachorro fofo","photo-1552053831-71594a27632d"]
+];
 
+const galeria=document.getElementById("galeria");
+const mensagem=document.getElementById("mensagem");
 
+function adicionarFoto(url,nome){
+  const card=document.createElement("article");
+  card.className="card";
+  card.dataset.nome=nome.toLowerCase();
 
+  const img=document.createElement("img");
+  img.src=url;
+  img.alt=nome;
+  img.loading="lazy";
 
+  img.onerror=()=>{
+    card.remove();
+    atualizarMensagem();
+  };
 
+  const info=document.createElement("div");
+  info.className="info";
 
-💙 Pinzy
+  const titulo=document.createElement("p");
+  titulo.textContent=nome;
 
+  const curtir=document.createElement("button");
+  curtir.className="curtir";
+  curtir.textContent="♡ Curtir";
 
-+ Publicar
+  curtir.onclick=()=>{
+    const ativo=curtir.dataset.ativo==="sim";
+    curtir.dataset.ativo=ativo?"nao":"sim";
+    curtir.textContent=ativo?"♡ Curtir":"♥ Curtido";
+  };
 
+  info.append(titulo,curtir);
+  card.append(img,info);
+  galeria.appendChild(card);
+  atualizarMensagem();
+}
 
+fotos.forEach(f=>{
+  adicionarFoto(
+    "https://images.unsplash.com/"+f[1]+"?auto=format&fit=crop&w=600&q=80",
+    f[0]
+  );
+});
 
+function filtrar(){
+  const busca=document.getElementById("busca").value.toLowerCase();
 
-Sua inspiração. Seu mundo. ✨
+  document.querySelectorAll(".card").forEach(card=>{
+    card.style.display=card.dataset.nome.includes(busca)?"inline-block":"none";
+  });
 
+  atualizarMensagem();
+}
 
-Encontre ideias e compartilhe sua inspiração!
+function atualizarMensagem(){
+  const visiveis=[...document.querySelectorAll(".card")]
+    .some(card=>card.style.display!=="none");
 
+  mensagem.hidden=visiveis;
+}
 
+document.getElementById("arquivo").addEventListener("change",evento=>{
+  Array.from(evento.target.files).forEach(arquivo=>{
+    if(!arquivo.type.startsWith("image/"))return;
 
+    const leitor=new FileReader();
 
+    leitor.onload=e=>{
+      adicionarFoto(e.target.result,arquivo.name);
+    };
 
+    leitor.readAsDataURL(arquivo);
+  });
 
+  evento.target.value="";
+});
+</script>
+</body>
+</html>
 
 
 
