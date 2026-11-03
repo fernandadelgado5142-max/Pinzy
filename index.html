@@ -4,204 +4,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080817">
 <title>Pinzy</title>
 
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#080817;color:#f5f2ff;
- font-family:Arial,sans-serif;padding-bottom:85px
+body{margin:0;background:#080810;color:#fff;font-family:Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:0}
+:root{--purple:#9333ea;--blue:#2563eb;--panel:#151522}
+#authGate{
+ position:fixed;inset:0;z-index:9999;
+ display:flex;align-items:center;justify-content:center;
+ padding:20px;background:radial-gradient(circle at top,#29205c,#100d24 55%,#05050b)
 }
-header{
- padding:22px 16px 15px;
- background:radial-gradient(circle at 85% 5%,#123b85,#21083c 45%,#080817 85%);
- border-bottom:1px solid #39245f
+.gate-box{
+ width:100%;max-width:390px;padding:28px;
+ background:#151322;border:1px solid #7040a5;
+ border-radius:24px;text-align:center;
+ box-shadow:0 0 35px #7c3aed33
 }
-.top{display:flex;justify-content:space-between;align-items:center}
-.logo{
- font-size:43px;font-weight:900;font-style:italic;
- background:linear-gradient(90deg,#c34bff,#398aff);
- -webkit-background-clip:text;color:transparent
+.logo{font-size:38px;font-weight:900;letter-spacing:-2px}
+.logo span{color:#a855f7}
+.gate-box p{color:#aaa;font-size:14px}
+.gate-box input,.field{
+ width:100%;padding:14px;margin:7px 0;
+ border:1px solid #39334c;border-radius:12px;
+ background:#090912;color:white;outline:none
 }
-.top button{
- background:#15152b;border:1px solid #59418b;
- border-radius:50%;width:42px;height:42px;font-size:19px
+.primary{
+ width:100%;padding:14px;border-radius:12px;
+ background:linear-gradient(100deg,#9333ea,#2563eb);
+ color:white;font-weight:bold;margin:7px 0
 }
-.tagline{color:#c7c3e8;font-size:13px;margin-top:3px}
-.search{display:flex;gap:8px;margin-top:20px}
-input,textarea{
+.secondary{
  width:100%;padding:13px;border-radius:12px;
- border:1px solid #44366b;background:#111126;
- color:white;font-size:15px;margin:7px 0
+ background:#242236;color:white;margin:7px 0
 }
-.search button{min-width:48px}
-button{
- border:0;border-radius:12px;padding:11px 14px;
- background:linear-gradient(120deg,#9228e9,#286cff);
- color:white;font-weight:bold;cursor:pointer
+#gateStatus{color:#ff8caa;font-size:13px;min-height:18px}
+body:not(.logged-in) #app{display:none}
+header{
+ position:sticky;top:0;z-index:50;
+ display:flex;align-items:center;gap:14px;
+ padding:13px 18px;background:#0b0b14ee;
+ border-bottom:1px solid #282238;backdrop-filter:blur(15px)
 }
+header .logo{font-size:28px}
+.search{flex:1;max-width:600px}
+.search input{
+ width:100%;padding:12px 16px;border-radius:25px;
+ border:1px solid #302b40;background:#171522;color:white
+}
+.header-btn{
+ background:#201b31;color:white;padding:11px 14px;
+ border-radius:12px
+}
+main{max-width:1400px;margin:auto;padding:18px 15px 100px}
+.welcome{margin:14px 0 22px}
+.welcome h2{margin-bottom:5px}
+.muted{color:#999;font-size:13px}
 .categories{
- display:flex;gap:8px;overflow-x:auto;padding:15px 0 3px
+ display:flex;gap:9px;overflow-x:auto;padding:5px 0 18px
 }
 .categories button{
- flex-shrink:0;border-radius:25px;
- background:#141429;border:1px solid #49366d;
- font-size:12px
+ flex-shrink:0;background:#191727;color:#ccc;
+ border:1px solid #302943;border-radius:20px;padding:10px 16px
 }
-.categories button.selected{
- background:linear-gradient(100deg,#9228e9,#286cff)
+.categories button.active{
+ background:linear-gradient(100deg,#9333ea,#2563eb);
+ color:white;border:0
 }
-#userInfo{text-align:center;color:#aaa;padding:10px;font-size:13px}
-main{max-width:1000px;margin:auto;padding:14px}
-.page{display:none}
-.page.active{display:block}
-h2{font-size:21px;color:#d9c3ff}
-.masonry{columns:2;column-gap:11px}
+.masonry{
+ columns:2;column-gap:12px
+}
+@media(min-width:650px){.masonry{columns:3}}
+@media(min-width:950px){.masonry{columns:4}}
+@media(min-width:1250px){.masonry{columns:5}}
 .post{
  display:inline-block;width:100%;break-inside:avoid;
- margin:0 0 12px;padding:8px;
- background:linear-gradient(145deg,#19152e,#101020);
- border:1px solid #30264e;border-radius:16px;
- box-shadow:0 3px 15px #0005
+ margin:0 0 14px;background:#151522;
+ border:1px solid #28243a;border-radius:16px;overflow:hidden
 }
-.post img{
- display:block;width:100%;height:auto;
- border-radius:11px;background:#191929
+.post img{width:100%;display:block;max-height:520px;object-fit:cover}
+.post-content{padding:12px}
+.post-title{font-weight:bold;margin-bottom:7px;overflow-wrap:anywhere}
+.post-user{font-size:12px;color:#aaa;margin-bottom:9px}
+.post-actions{display:flex;align-items:center;gap:8px}
+.post-actions button{
+ background:#252137;color:white;border-radius:10px;padding:8px 10px
 }
-.post p{font-size:14px;overflow-wrap:anywhere}
-.post small{color:#aaa;font-size:11px}
-.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
-.actions button{
- padding:8px 10px;font-size:12px;
- background:#19172d;border:1px solid #49336f
-}
+.page{display:none}
+.page.active{display:block}
+.section-title{font-size:22px;margin:12px 0 18px}
 .panel{
- padding:16px;background:#131226;
- border:1px solid #443365;border-radius:16px;margin:12px 0
+ background:#151522;border:1px solid #302943;
+ border-radius:17px;padding:18px;margin-bottom:15px
 }
-textarea{min-height:90px;resize:vertical}
-#preview{display:none;max-width:100%;max-height:260px;margin:10px auto}
+.panel input,.panel textarea,.panel select{
+ width:100%;padding:13px;margin:7px 0 12px;
+ border-radius:10px;border:1px solid #39334c;
+ background:#090912;color:white
+}
+.panel textarea{min-height:90px;resize:vertical}
 .bottom{
- position:fixed;bottom:0;left:0;right:0;z-index:20;
- display:flex;justify-content:space-around;align-items:center;
- padding:10px 3px calc(10px + env(safe-area-inset-bottom));
- background:#0c0c1cf5;border-top:1px solid #44316b;
- box-shadow:0 -5px 20px #32116b55
+ position:fixed;bottom:0;left:0;right:0;z-index:100;
+ display:flex;justify-content:space-around;gap:3px;
+ padding:10px 4px calc(10px + env(safe-area-inset-bottom));
+ background:#10101bf5;border-top:1px solid #302943
 }
 .bottom button{
- background:transparent;color:#c7c3e8;
- padding:7px 5px;font-size:11px;line-height:1.5
+ flex:1;background:transparent;color:#aaa;
+ padding:8px 2px;font-size:11px
 }
-.bottom button.active{color:#bd72ff}
-.bottom .add{
- width:48px;height:48px;border-radius:50%;
- font-size:25px;background:linear-gradient(130deg,#a000ff,#176cff)
-}
-.muted{color:#aaa}
+.bottom button span{display:block;font-size:20px;margin-bottom:4px}
+.bottom button.active{color:#c084fc}
+.empty{text-align:center;color:#999;padding:35px 10px}
 .hidden{display:none!important}
-footer{text-align:center;color:#777;padding:20px}
-@media(min-width:650px){
- .masonry{columns:3}
- header,main{padding-left:25px;padding-right:25px}
-}
-@media(min-width:950px){.masonry{columns:4}}
+.user-line{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.small-btn{padding:9px 12px;border-radius:10px;background:#29233b;color:white}
+#loading{text-align:center;color:#aaa;padding:20px}
 </style>
 </head>
 
 <body>
 
+<!-- TELA DE ENTRADA -->
+<div id="authGate">
+ <div class="gate-box">
+  <div class="logo">Pin<span>zy</span></div>
+  <p>Descubra, publique e compartilhe suas inspirações.</p>
+
+  <input id="gateEmail" type="email" placeholder="Seu e-mail">
+  <input id="gatePassword" type="password" placeholder="Sua senha">
+
+  <button class="primary" id="gateRegister">Criar minha conta</button>
+  <button class="secondary" id="gateLogin">Entrar na minha conta</button>
+  <button class="secondary" id="gateGoogle">🌐 Entrar com Google</button>
+  <div id="gateStatus"></div>
+ </div>
+</div>
+
+<div id="app">
+
 <header>
- <div class="top">
-  <div>
-   <div class="logo">♛ Pinzy</div>
-   <div class="tagline">Explore. Inspire. Compartilhe. 💙</div>
-  </div>
-  <button id="settingsTop" aria-label="Configurações">⚙️</button>
- </div>
-
+ <div class="logo">Pin<span>zy</span></div>
  <div class="search">
-  <input id="search" placeholder="🔎 Buscar inspirações...">
-  <button id="searchButton">⌕</button>
+  <input id="searchInput" placeholder="Pesquisar inspirações...">
  </div>
-
- <div class="categories" id="categories">
-  <button class="selected" data-category="Todas">✨ Todas</button>
-  <button data-category="Fotografia">📷 Fotos</button>
-  <button data-category="Natureza">🌿 Natureza</button>
-  <button data-category="Tatuagem">✒️ Tatuagens</button>
-  <button data-category="Arte">🎨 Artes</button>
-  <button data-category="Decoração">🏠 Decoração</button>
-  <button data-category="Paisagens">🏙️ Paisagens</button>
-  <button data-category="Anime">🌙 Anime</button>
-  <button data-category="Frases">💡 Frases</button>
- </div>
+ <button class="header-btn" onclick="showPage('settings')">⚙️</button>
 </header>
-
-<div id="userInfo">Você não está conectado.</div>
 
 <main>
 
-<section id="home" class="page active">
- <h2>Inspirações para você</h2>
- <div id="homePosts" class="masonry">Carregando...</div>
+<div class="welcome">
+ <h2>Seu mundo de inspirações ✨</h2>
+ <div class="muted">Encontre ideias e compartilhe o que você ama.</div>
+</div>
+
+<div class="categories" id="categories">
+ <button class="active" data-category="Todas">Todas</button>
+ <button data-category="Fotos">Fotos</button>
+ <button data-category="Natureza">Natureza</button>
+ <button data-category="Tatuagens">Tatuagens</button>
+ <button data-category="Artes">Artes</button>
+ <button data-category="Decoração">Decoração</button>
+ <button data-category="Paisagens">Paisagens</button>
+ <button data-category="Anime">Anime</button>
+ <button data-category="Frases">Frases</button>
+</div>
+
+<section id="homePage" class="page active">
+ <div id="loading">Carregando inspirações...</div>
+ <div class="masonry" id="feed"></div>
 </section>
 
-<section id="explore" class="page">
- <h2>Explore o Pinzy</h2>
- <p class="muted">Descubra imagens e novas ideias.</p>
- <div id="explorePosts" class="masonry"></div>
+<section id="explorePage" class="page">
+ <h2 class="section-title">Explorar 🔎</h2>
+ <p class="muted">Descubra publicações da comunidade Pinzy.</p>
+ <div class="masonry" id="exploreFeed"></div>
 </section>
 
-<section id="favorites" class="page">
- <h2>💜 Coleções salvas</h2>
- <div id="favoritePosts" class="masonry"></div>
+<section id="favoritesPage" class="page">
+ <h2 class="section-title">Curtidas ❤️</h2>
+ <div class="masonry" id="favoritesFeed"></div>
 </section>
 
-<section id="publish" class="page">
- <h2>＋ Criar publicação</h2>
+<section id="publishPage" class="page">
+ <h2 class="section-title">Publicar inspiração ✨</h2>
  <div class="panel">
-  <p>Compartilhe uma inspiração com a comunidade.</p>
-  <input id="photoFile" type="file" accept="image/*">
-  <img id="preview" alt="Prévia da imagem">
-  <textarea id="description" placeholder="Escreva uma descrição..."></textarea>
-  <input id="categoryInput" placeholder="Categoria (ex: Natureza)">
-  <button id="publishButton">Publicar no Pinzy</button>
-  <p id="uploadStatus" class="muted"></p>
+  <label>Imagem</label>
+  <input id="postImage" type="file" accept="image/*">
+  <label>Título</label>
+  <input id="postTitle" placeholder="Dê um título para sua publicação">
+  <label>Descrição</label>
+  <textarea id="postDescription" placeholder="Conte um pouco sobre essa imagem..."></textarea>
+  <label>Categoria</label>
+  <select id="postCategory">
+   <option>Fotos</option><option>Natureza</option>
+   <option>Tatuagens</option><option>Artes</option>
+   <option>Decoração</option><option>Paisagens</option>
+   <option>Anime</option><option>Frases</option>
+  </select>
+  <button class="primary" id="publishButton">Publicar no Pinzy</button>
+  <p id="publishStatus" class="muted"></p>
  </div>
 </section>
 
-<section id="profile" class="page">
- <h2>Meu perfil</h2>
+<section id="profilePage" class="page">
+ <h2 class="section-title">Meu perfil 👤</h2>
  <div class="panel">
-  <p id="profileEmail" class="muted">Entre ou crie sua conta.</p>
-  <input id="email" type="email" placeholder="Seu e-mail">
-  <input id="password" type="password" placeholder="Sua senha">
-  <button id="registerButton">Criar conta</button>
-  <button id="loginButton">Entrar</button>
-  <button id="googleButton">Continuar com Google</button>
-  <button id="logoutButton">Sair da conta</button>
-  <p id="authStatus" class="muted"></p>
+  <h3 id="profileEmail">Minha conta</h3>
+  <p class="muted">Bem-vindo à sua área pessoal.</p>
+  <button class="secondary" onclick="showPage('myPosts')">Minhas publicações</button>
  </div>
- <h2>Minhas publicações</h2>
  <div id="myPosts" class="masonry"></div>
 </section>
 
-<section id="settings" class="page">
- <h2>⚙️ Configurações</h2>
+<section id="settingsPage" class="page">
+ <h2 class="section-title">Configurações ⚙️</h2>
  <div class="panel">
-  <h3>Conta</h3>
-  <p>Gerencie seu acesso ao Pinzy na área de perfil.</p>
-  <button data-page="profile">Minha conta</button>
-  <h3>Sobre</h3>
-  <p class="muted">Pinzy — Explore. Inspire. Compartilhe.</p>
+  <p>Conta conectada:</p>
+  <strong id="settingsEmail"></strong>
+  <button class="secondary" onclick="logout()">Sair da conta</button>
  </div>
 </section>
 
-<section id="admin" class="page">
- <h2>♛ Administração</h2>
+<section id="adminPage" class="page">
+ <h2 class="section-title">Painel administrativo 👑</h2>
  <div class="panel">
-  <p id="adminStatus">Painel administrativo.</p>
+  <h3>Administração do Pinzy</h3>
+  <p class="muted">Gerencie as publicações da comunidade.</p>
   <div id="adminPosts"></div>
  </div>
 </section>
@@ -209,23 +240,22 @@ footer{text-align:center;color:#777;padding:20px}
 </main>
 
 <nav class="bottom">
- <button data-page="home" class="active">⌂<br>Início</button>
- <button data-page="explore">⌕<br>Explorar</button>
- <button data-page="publish" class="add">＋</button>
- <button data-page="favorites">♡<br>Coleções</button>
- <button data-page="profile">♙<br>Perfil</button>
+ <button class="active" data-page="home"><span>⌂</span>Início</button>
+ <button data-page="explore"><span>⌕</span>Explorar</button>
+ <button data-page="publish"><span>＋</span>Publicar</button>
+ <button data-page="favorites"><span>♡</span>Curtidas</button>
+ <button data-page="profile"><span>♙</span>Perfil</button>
 </nav>
 
-<footer>Pinzy 💜💙</footer>
+</div>
 
 <script type="module">
-import {initializeApp}
-from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 
 import {
  getAuth,GoogleAuthProvider,signInWithPopup,
- createUserWithEmailAndPassword,
- signInWithEmailAndPassword,signOut,onAuthStateChanged
+ createUserWithEmailAndPassword,signInWithEmailAndPassword,
+ signOut,onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 import {
@@ -235,10 +265,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 import {
- getStorage,ref,uploadBytes,getDownloadURL,deleteObject
+ getStorage,ref,uploadBytes,getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
-// 1. COLOQUE A CONFIGURAÇÃO DO SEU FIREBASE AQUI
+/* COLOQUE AQUI OS DADOS DO SEU PROJETO FIREBASE */
 const firebaseConfig = {
  apiKey:"COLOQUE_SUA_API_KEY",
  authDomain:"COLOQUE_SEU_AUTH_DOMAIN",
@@ -248,7 +278,7 @@ const firebaseConfig = {
  appId:"COLOQUE_SEU_APP_ID"
 };
 
-// 2. COLOQUE SEU E-MAIL DE ADMINISTRADOR
+/* COLOQUE AQUI O SEU E-MAIL DE ADMINISTRADOR */
 const ADMIN_EMAIL = "SEU_EMAIL@gmail.com";
 
 const app = initializeApp(firebaseConfig);
@@ -261,350 +291,254 @@ const $ = id => document.getElementById(id);
 
 let currentUser = null;
 let allPosts = [];
-let selectedCategory = "Todas";
+let activeCategory = "Todas";
+let unsubscribePosts = null;
 
-function isAdmin(){
- return currentUser &&
- currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+function message(text){
+ $("gateStatus").textContent = text;
 }
 
-// NAVEGAÇÃO
-function openPage(page){
- if(page === "admin" && !isAdmin()){
-  alert("Área exclusiva do administrador.");
-  return;
- }
-
+function showPage(name){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- $(page)?.classList.add("active");
+ const page = $(name+"Page");
+ if(page) page.classList.add("active");
 
  document.querySelectorAll(".bottom button").forEach(b=>{
-  b.classList.toggle("active",b.dataset.page===page);
+  b.classList.toggle("active",b.dataset.page===name);
  });
-
- if(page==="favorites")renderFavorites();
- if(page==="profile")renderMyPosts();
- if(page==="admin")renderAdmin();
- if(page==="home"||page==="explore")renderPosts();
 }
 
-document.querySelectorAll("[data-page]").forEach(button=>{
- button.addEventListener("click",()=>openPage(button.dataset.page));
+window.showPage = showPage;
+
+document.querySelectorAll(".bottom button").forEach(button=>{
+ button.addEventListener("click",()=>showPage(button.dataset.page));
 });
 
-$("settingsTop").onclick=()=>openPage("settings");
-
-// FILTROS
-document.querySelectorAll("#categories button").forEach(button=>{
- button.onclick=()=>{
-  selectedCategory=button.dataset.category;
-  document.querySelectorAll("#categories button").forEach(b=>
-   b.classList.toggle("selected",b===button)
-  );
-  renderPosts();
- };
-});
-
-$("search").addEventListener("input",renderPosts);
-$("searchButton").onclick=renderPosts;
-
-// CADASTRO
-$("registerButton").onclick=async()=>{
+$("gateRegister").onclick = async()=>{
  try{
+  message("Criando sua conta...");
   await createUserWithEmailAndPassword(
-   auth,$("email").value.trim(),$("password").value
+   auth,$("gateEmail").value.trim(),$("gatePassword").value
   );
-  $("authStatus").textContent="Conta criada com sucesso!";
- }catch(e){$("authStatus").textContent=e.message}
+  message("");
+ }catch(e){message("Erro: "+e.message)}
 };
 
-// LOGIN
-$("loginButton").onclick=async()=>{
+$("gateLogin").onclick = async()=>{
  try{
+  message("Entrando...");
   await signInWithEmailAndPassword(
-   auth,$("email").value.trim(),$("password").value
+   auth,$("gateEmail").value.trim(),$("gatePassword").value
   );
-  $("authStatus").textContent="Login realizado!";
- }catch(e){$("authStatus").textContent=e.message}
+  message("");
+ }catch(e){message("Erro: "+e.message)}
 };
 
-// GOOGLE
-$("googleButton").onclick=async()=>{
+$("gateGoogle").onclick = async()=>{
  try{
+  message("Conectando com Google...");
   await signInWithPopup(auth,googleProvider);
- }catch(e){$("authStatus").textContent=e.message}
+  message("");
+ }catch(e){message("Erro: "+e.message)}
 };
 
-// SAIR
-$("logoutButton").onclick=()=>signOut(auth);
+window.logout = async()=>{
+ await signOut(auth);
+};
 
-// USUÁRIO
-onAuthStateChanged(auth,user=>{
- currentUser=user;
- $("userInfo").textContent=user
-  ? "Conectado: "+user.email
-  : "Você não está conectado.";
- $("profileEmail").textContent=user
-  ? user.email
-  : "Entre ou crie sua conta.";
- $("logoutButton").classList.toggle("hidden",!user);
+function safeText(value){
+ return String(value || "").replace(/[&<>"']/g,char=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[char]);
+}
 
- // O botão administrativo só aparece para o e-mail autorizado.
- let adminButton=document.getElementById("adminNav");
- if(isAdmin() && !adminButton){
-  adminButton=document.createElement("button");
-  adminButton.id="adminNav";
-  adminButton.dataset.page="admin";
-  adminButton.textContent="♛ Admin";
-  document.querySelector(".bottom").appendChild(adminButton);
-  adminButton.onclick=()=>openPage("admin");
+function renderPost(post){
+ const liked = (post.likes || []).includes(currentUser.uid);
+ const isOwner = post.userId === currentUser.uid;
+ const isAdmin = currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+ return `
+ <article class="post">
+  <img src="${safeText(post.imageUrl)}" alt="${safeText(post.title)}" loading="lazy">
+  <div class="post-content">
+   <div class="post-title">${safeText(post.title)}</div>
+   <div class="post-user">${safeText(post.userEmail || "Usuário Pinzy")}</div>
+   <p class="muted">${safeText(post.description)}</p>
+   <div class="post-actions">
+    <button data-like="${post.id}">${liked?"❤️":"🤍"} ${post.likes?.length || 0}</button>
+    ${(isOwner || isAdmin)?`<button data-delete="${post.id}">🗑️</button>`:""}
+   </div>
+  </div>
+ </article>`;
+}
+
+function renderPosts(){
+ const search = $("searchInput").value.trim().toLowerCase();
+
+ const filtered = allPosts.filter(post=>{
+  const matchesCategory = activeCategory==="Todas" ||
+   post.category===activeCategory;
+  const matchesSearch =
+   (post.title || "").toLowerCase().includes(search) ||
+   (post.description || "").toLowerCase().includes(search) ||
+   (post.category || "").toLowerCase().includes(search);
+  return matchesCategory && matchesSearch;
+ });
+
+ $("feed").innerHTML = filtered.length
+  ? filtered.map(renderPost).join("")
+  : `<div class="empty">Ainda não há publicações por aqui.</div>`;
+
+ $("exploreFeed").innerHTML = filtered.length
+  ? filtered.map(renderPost).join("")
+  : `<div class="empty">Nenhuma inspiração encontrada.</div>`;
+
+ const favorites = allPosts.filter(post=>(post.likes || []).includes(currentUser.uid));
+ $("favoritesFeed").innerHTML = favorites.length
+  ? favorites.map(renderPost).join("")
+  : `<div class="empty">Você ainda não curtiu nenhuma publicação.</div>`;
+
+ const mine = allPosts.filter(post=>post.userId===currentUser.uid);
+ $("myPosts").innerHTML = mine.length
+  ? mine.map(renderPost).join("")
+  : `<div class="empty">Você ainda não publicou nada.</div>`;
+
+ if(currentUser.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+  $("adminPosts").innerHTML = allPosts.length
+   ? allPosts.map(post=>`
+    <div class="user-line panel">
+     <span>${safeText(post.title)}<br><small class="muted">${safeText(post.userEmail)}</small></span>
+     <button class="small-btn" data-delete="${post.id}">Excluir</button>
+    </div>`).join("")
+   : "Nenhuma publicação.";
  }
- if(!isAdmin() && adminButton)adminButton.remove();
+ $("loading").classList.add("hidden");
+}
 
- renderPosts();
- renderFavorites();
- renderMyPosts();
+document.addEventListener("click",async event=>{
+ const likeButton = event.target.closest("[data-like]");
+ const deleteButton = event.target.closest("[data-delete]");
+
+ if(likeButton){
+  const id = likeButton.dataset.like;
+  const post = allPosts.find(p=>p.id===id);
+  if(!post)return;
+
+  const likes = post.likes || [];
+  const liked = likes.includes(currentUser.uid);
+
+  try{
+   await updateDoc(doc(db,"posts",id),{
+    likes:liked?arrayRemove(currentUser.uid):arrayUnion(currentUser.uid)
+   });
+  }catch(e){alert("Não foi possível curtir: "+e.message)}
+ }
+
+ if(deleteButton){
+  const id = deleteButton.dataset.delete;
+  if(!confirm("Deseja excluir esta publicação?"))return;
+
+  try{
+   await deleteDoc(doc(db,"posts",id));
+  }catch(e){alert("Não foi possível excluir: "+e.message)}
+ }
 });
 
-// PRÉVIA
-$("photoFile").onchange=()=>{
- const file=$("photoFile").files[0];
- if(!file)return;
- $("preview").src=URL.createObjectURL(file);
- $("preview").style.display="block";
-};
+document.querySelectorAll("#categories button").forEach(button=>{
+ button.addEventListener("click",()=>{
+  activeCategory=button.dataset.category;
+  document.querySelectorAll("#categories button").forEach(b=>b.classList.remove("active"));
+  button.classList.add("active");
+  renderPosts();
+ });
+});
 
-// PUBLICAR
-$("publishButton").onclick=async()=>{
- if(!currentUser){
-  alert("Entre na sua conta primeiro.");
-  return;
- }
+$("searchInput").addEventListener("input",renderPosts);
 
- const file=$("photoFile").files[0];
- if(!file){alert("Escolha uma imagem.");return}
- if(!file.type.startsWith("image/")){
-  alert("Escolha um arquivo de imagem.");return;
- }
+$("publishButton").onclick = async()=>{
+ const file = $("postImage").files[0];
+ const title = $("postTitle").value.trim();
+ const description = $("postDescription").value.trim();
+ const category = $("postCategory").value;
+
+ if(!file){$("publishStatus").textContent="Escolha uma imagem primeiro.";return}
+ if(!title){$("publishStatus").textContent="Digite um título.";return}
  if(file.size>10*1024*1024){
-  alert("A imagem deve ter no máximo 10 MB.");return;
+  $("publishStatus").textContent="A imagem deve ter até 10 MB.";return;
  }
-
- $("publishButton").disabled=true;
- $("uploadStatus").textContent="Enviando imagem...";
 
  try{
-  const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-  const imageRef=ref(storage,
-   "posts/"+currentUser.uid+"/"+Date.now()+"_"+safeName
-  );
+  $("publishButton").disabled=true;
+  $("publishStatus").textContent="Enviando sua publicação...";
+
+  const fileName = Date.now()+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+  const imageRef = ref(storage,"posts/"+currentUser.uid+"/"+fileName);
 
   await uploadBytes(imageRef,file);
-  const imageURL=await getDownloadURL(imageRef);
+  const imageUrl = await getDownloadURL(imageRef);
 
   await addDoc(collection(db,"posts"),{
-   imageURL,
-   storagePath:imageRef.fullPath,
-   description:$("description").value.trim(),
-   category:$("categoryInput").value.trim()||"Geral",
+   title,description,category,imageUrl,
    userId:currentUser.uid,
-   userEmail:currentUser.email,
-   likedBy:[],
+   userEmail:currentUser.email || "",
+   likes:[],
    createdAt:serverTimestamp()
   });
 
-  $("photoFile").value="";
-  $("description").value="";
-  $("categoryInput").value="";
-  $("preview").style.display="none";
-  $("uploadStatus").textContent="Publicado com sucesso! 💜";
-  openPage("home");
+  $("postImage").value="";
+  $("postTitle").value="";
+  $("postDescription").value="";
+  $("publishStatus").textContent="Publicado com sucesso! 💜";
+  showPage("home");
 
  }catch(e){
-  $("uploadStatus").textContent="Erro: "+e.message;
+  $("publishStatus").textContent="Erro ao publicar: "+e.message;
  }finally{
   $("publishButton").disabled=false;
  }
 };
 
-// PUBLICAÇÕES
-const postsQuery=query(collection(db,"posts"),orderBy("createdAt","desc"));
+onAuthStateChanged(auth,user=>{
+ currentUser=user;
+ document.body.classList.toggle("logged-in",!!user);
 
-onSnapshot(postsQuery,snapshot=>{
- allPosts=snapshot.docs.map(d=>({id:d.id,...d.data()}));
- renderPosts();
- renderFavorites();
- renderMyPosts();
- if(isAdmin())renderAdmin();
-},error=>{
- $("homePosts").textContent="Erro ao carregar: "+error.message;
-});
+ if(unsubscribePosts){
+  unsubscribePosts();
+  unsubscribePosts=null;
+ }
 
-// CARTÃO DE PUBLICAÇÃO
-function createPostCard(post){
- const card=document.createElement("article");
- card.className="post";
-
- const img=document.createElement("img");
- img.src=post.imageURL;
- img.alt=post.description||"Imagem do Pinzy";
- img.loading="lazy";
-
- const desc=document.createElement("p");
- desc.textContent=post.description||"";
-
- const category=document.createElement("small");
- category.textContent="✦ "+(post.category||"Geral");
-
- const author=document.createElement("small");
- author.textContent=" · "+(post.userEmail||"Usuário");
-
- const actions=document.createElement("div");
- actions.className="actions";
-
- const like=document.createElement("button");
- const liked=currentUser&&(post.likedBy||[]).includes(currentUser.uid);
- like.textContent=(liked?"❤️":"♡")+" "+(post.likedBy||[]).length;
- like.onclick=()=>toggleLike(post.id);
-
- const save=document.createElement("button");
- save.textContent="＋ Salvar";
- save.onclick=()=>toggleLike(post.id);
-
- actions.append(like,save);
- card.append(img,desc,category,author,actions);
- return card;
-}
-
-// RENDERIZAR
-function renderPosts(){
- const home=$("homePosts");
- const explore=$("explorePosts");
- if(!home||!explore)return;
-
- home.replaceChildren();
- explore.replaceChildren();
-
- const term=$("search").value.toLowerCase();
-
- const filtered=allPosts.filter(post=>{
-  const content=((post.description||"")+" "+
-   (post.category||"")+" "+(post.userEmail||"")).toLowerCase();
-
-  const matchesText=content.includes(term);
-  const matchesCategory=selectedCategory==="Todas"||
-   (post.category||"").toLowerCase()===selectedCategory.toLowerCase();
-
-  return matchesText&&matchesCategory;
- });
-
- if(filtered.length===0){
-  home.textContent="Ainda não há imagens por aqui.";
-  explore.textContent="Nenhuma imagem encontrada.";
+ if(!user){
+  allPosts=[];
   return;
  }
 
- filtered.forEach(post=>{
-  home.appendChild(createPostCard(post));
-  explore.appendChild(createPostCard(post));
- });
-}
+ $("profileEmail").textContent=user.email || "Minha conta";
+ $("settingsEmail").textContent=user.email || "";
 
-// CURTIDAS
-async function toggleLike(postId){
- if(!currentUser){alert("Entre na conta primeiro.");return}
+ const isAdmin=user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
 
- const post=allPosts.find(p=>p.id===postId);
- if(!post)return;
-
- const liked=(post.likedBy||[]).includes(currentUser.uid);
-
- try{
-  await updateDoc(doc(db,"posts",postId),{
-   likedBy:liked
-    ? arrayRemove(currentUser.uid)
-    : arrayUnion(currentUser.uid)
-  });
- }catch(e){alert("Erro ao atualizar: "+e.message)}
-}
-
-// FAVORITOS
-function renderFavorites(){
- const box=$("favoritePosts");
- if(!box)return;
- box.replaceChildren();
-
- if(!currentUser){
-  box.textContent="Entre na conta para ver suas imagens salvas.";
-  return;
+ let adminButton=document.getElementById("adminNav");
+ if(isAdmin && !adminButton){
+  adminButton=document.createElement("button");
+  adminButton.id="adminNav";
+  adminButton.innerHTML="<span>👑</span>Admin";
+  adminButton.onclick=()=>showPage("admin");
+  document.querySelector(".bottom").appendChild(adminButton);
  }
+ if(!isAdmin && adminButton)adminButton.remove();
 
- const favorites=allPosts.filter(p=>
-  (p.likedBy||[]).includes(currentUser.uid)
+ const postsQuery=query(
+  collection(db,"posts"),
+  orderBy("createdAt","desc")
  );
 
- if(!favorites.length){
-  box.textContent="Você ainda não salvou imagens.";
-  return;
- }
-
- favorites.forEach(p=>box.appendChild(createPostCard(p)));
-}
-
-// MINHAS PUBLICAÇÕES
-function renderMyPosts(){
- const box=$("myPosts");
- if(!box)return;
- box.replaceChildren();
-
- if(!currentUser)return;
-
- const mine=allPosts.filter(p=>p.userId===currentUser.uid);
- mine.forEach(p=>box.appendChild(createPostCard(p)));
-}
-
-// ADMINISTRAÇÃO
-function renderAdmin(){
- const box=$("adminPosts");
- box.replaceChildren();
-
- if(!isAdmin()){
-  $("adminStatus").textContent="Acesso não autorizado.";
-  return;
- }
-
- $("adminStatus").textContent=
-  "Administrador conectado. Publicações: "+allPosts.length;
-
- allPosts.forEach(post=>{
-  const item=document.createElement("div");
-  item.className="panel";
-
-  const desc=document.createElement("p");
-  desc.textContent=post.description||"Sem descrição";
-
-  const author=document.createElement("small");
-  author.textContent=post.userEmail||"Usuário";
-
-  const remove=document.createElement("button");
-  remove.textContent="Excluir publicação";
-
-  remove.onclick=async()=>{
-   if(!confirm("Tem certeza que deseja excluir?"))return;
-   try{
-    await deleteDoc(doc(db,"posts",post.id));
-    if(post.storagePath){
-     try{await deleteObject(ref(storage,post.storagePath))}
-     catch(e){console.warn(e)}
-    }
-   }catch(e){alert("Erro ao excluir: "+e.message)}
-  };
-
-  item.append(desc,author,remove);
-  box.appendChild(item);
+ unsubscribePosts=onSnapshot(postsQuery,snapshot=>{
+  allPosts=snapshot.docs.map(d=>({id:d.id,...d.data()}));
+  renderPosts();
+ },error=>{
+  $("loading").textContent="Erro ao carregar publicações: "+error.message;
  });
-}
+});
 </script>
-
 </body>
 </html>
