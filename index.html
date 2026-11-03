@@ -1,149 +1,411 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pinzy</title>
+<title>Pinzy 💙</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial;background:#f4f7ff;color:#172554}
-header{background:white;padding:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;box-shadow:0 2px 8px #dbeafe}
-.logo{font-size:25px;font-weight:bold;color:#1769ff;display:flex;align-items:center;gap:7px}
-#perfil{width:40px;height:40px;border-radius:50%;object-fit:cover;display:none}
-input{padding:12px;border:0;border-radius:22px;background:#eef3ff;font-size:14px}
-#busca{flex:1;min-width:120px}
-button{padding:11px;border:0;border-radius:22px;background:#1769ff;color:white;font-weight:bold}
-main{padding:14px}
-#galeria{columns:2;column-gap:10px}
-.card{display:inline-block;width:100%;break-inside:avoid;margin-bottom:12px;background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 7px #dbeafe}
-.card img{width:100%;display:block}
-.info{padding:9px}
-.info p{font-weight:bold}
-.curtir{background:#e8efff;color:#1769ff}
-footer{text-align:center;padding:20px;color:#64748b}
-@media(min-width:700px){#galeria{columns:4}}
+body{margin:0;background:#f4f6fc;color:#202b45;font-family:Arial}
+header{position:sticky;top:0;background:white;padding:12px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;box-shadow:0 2px 8px #ddd;z-index:5}
+.logo{font-size:26px;font-weight:bold;color:#1769ff}
+input,select{padding:12px;border:1px solid #ddd;border-radius:20px;max-width:100%}
+#pesquisa{flex:1;min-width:130px}
+button{padding:11px 15px;border:0;border-radius:20px;background:#1769ff;color:white;font-weight:bold;cursor:pointer}
+main{max-width:1200px;margin:auto;padding:15px}
+.painel{background:white;padding:15px;border-radius:14px;margin:14px 0}
+#galeria{columns:2;column-gap:12px}
+.foto{display:inline-block;width:100%;break-inside:avoid;background:white;margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px #ddd}
+.foto img{width:100%;display:block}
+.detalhes{padding:10px}
+.detalhes p{overflow-wrap:anywhere}
+.curtir{background:#edf2ff;color:#1769ff}
+.acoes{display:flex;gap:8px;flex-wrap:wrap}
+.escondido{display:none!important}
+#avatar{width:75px;height:75px;border-radius:50%;object-fit:cover}
+#mensagem{color:#1769ff;font-weight:bold}
+#mais{display:block;margin:20px auto}
+@media(min-width:650px){#galeria{columns:3}}
+@media(min-width:950px){#galeria{columns:4}}
 </style>
 </head>
 <body>
 
 <header>
-<div class="logo">
-<img id="perfil" alt="Perfil">
-<span>💙 Pinzy</span>
-</div>
-
-<input id="busca" placeholder="🔍 Buscar..." oninput="filtrar()">
-
-<button onclick="document.getElementById('trocar').click()">Trocar foto</button>
-<input id="trocar" type="file" accept="image/*" hidden>
-
-<button onclick="document.getElementById('arquivo').click()">+ Publicar</button>
-<input id="arquivo" type="file" accept="image/*" multiple hidden>
+<div class="logo">💙 PINZY</div>
+<input id="pesquisa" placeholder="🔍 Pesquisar fotos...">
+<select id="categoria">
+<option value="">Todas as categorias</option>
+<option>Tatuagens</option><option>Desenhos</option>
+<option>Pessoas</option><option>Animais</option>
+<option>Natureza</option><option>Carros</option>
+<option>Moda</option><option>Paisagens</option>
+<option>Decoração</option><option>Comida</option><option>Outros</option>
+</select>
+<button onclick="document.getElementById('arquivoFoto').scrollIntoView({behavior:'smooth'})">＋ Publicar</button>
 </header>
 
 <main>
-<h2>Sua inspiração. Seu mundo. ✨</h2>
-<p>Descubra ideias e encontre inspiração!</p>
+<h2>Descubra inspirações 💙</h2>
+<p>Compartilhe suas fotos e descubra novas ideias!</p>
+
+<section class="painel">
+<h3>👤 Minha conta</h3>
+<input id="email" type="email" placeholder="Seu e-mail" style="width:100%;margin:5px 0">
+<input id="senha" type="password" placeholder="Sua senha" style="width:100%;margin:5px 0">
+<div class="acoes">
+<button id="cadastrar">Criar conta</button>
+<button id="entrar">Entrar</button>
+<button id="sair">Sair</button>
+</div>
+<p id="usuario">Você não está conectado.</p>
+</section>
+
+<section id="perfil" class="painel escondido">
+<h3>Meu perfil</h3>
+<img id="avatar" alt="Foto de perfil">
+<p id="emailPerfil"></p>
+<input id="arquivoAvatar" type="file" accept="image/*">
+<button id="salvarAvatar">Alterar foto</button>
+</section>
+
+<section class="painel">
+<h3>📸 Publicar fotos</h3>
+<input id="arquivoFoto" type="file" accept="image/*" multiple>
+<input id="tituloFoto" placeholder="Nome da publicação" style="width:100%;margin:8px 0">
+<select id="categoriaFoto" style="width:100%">
+<option>Tatuagens</option><option>Desenhos</option>
+<option>Pessoas</option><option>Animais</option>
+<option>Natureza</option><option>Carros</option>
+<option>Moda</option><option>Paisagens</option>
+<option>Decoração</option><option>Comida</option><option>Outros</option>
+</select>
+<button id="publicar" style="margin-top:10px">Publicar</button>
+</section>
+
+<section id="admin" class="painel escondido">
+<h3>👑 Painel administrativo</h3>
+<p id="cargo"></p>
+<input id="idExcluir" placeholder="ID da publicação">
+<button id="excluir">Excluir publicação</button>
+</section>
+
+<p id="mensagem">Conectando ao Pinzy...</p>
 <div id="galeria"></div>
-<p id="vazio" hidden>Nenhuma foto encontrada.</p>
+<p id="vazio" class="escondido">Nenhuma foto encontrada.</p>
+<button id="mais">Carregar mais fotos</button>
 </main>
 
-<footer>Feito com 💙 por Pinzy</footer>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+ getAuth,createUserWithEmailAndPassword,
+ signInWithEmailAndPassword,signOut,onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+ getFirestore,collection,addDoc,getDocs,query,
+ orderBy,limit,startAfter,doc,updateDoc,deleteDoc,
+ arrayUnion,arrayRemove,serverTimestamp,setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+ getStorage,ref,uploadBytes,getDownloadURL,deleteObject
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-<script>
-const fotos=[
-["Natureza","photo-1470252649378-9c29740c9fa8"],
-["Praia","photo-1507525428034-b723cf961d3e"],
-["Flores","photo-1490750967868-88aa4486c946"],
-["Montanhas","photo-1464822759023-fed622ff2c3b"],
-["Moda","photo-1483985988355-763728e1935b"],
-["Café","photo-1445116572660-236099ec97a0"],
-["Paisagem","photo-1470770841072-f978cf4d019e"],
-["Arquitetura","photo-1487958449943-2429e8be8625"],
-["Gatos","photo-1514888286974-6c03e2ca1dba"],
-["Decoração","photo-1616486338812-3dadae4b4ace"],
-["Comida","photo-1540189549336-e6e99c3679fe"],
-["Cachorro","photo-1552053831-71594a27632d"]
-];
-
-const galeria=document.getElementById("galeria");
-
-function adicionarFoto(url,nome){
-const card=document.createElement("article");
-card.className="card";
-card.dataset.nome=nome.toLowerCase();
-
-const img=document.createElement("img");
-img.src=url;
-img.alt=nome;
-img.loading="lazy";
-img.onerror=()=>card.remove();
-
-const info=document.createElement("div");
-info.className="info";
-
-const titulo=document.createElement("p");
-titulo.textContent=nome;
-
-const curtir=document.createElement("button");
-curtir.className="curtir";
-curtir.textContent="♡ Curtir";
-curtir.onclick=()=>{
-curtir.textContent=curtir.textContent==="♡ Curtir"?"♥ Curtido":"♡ Curtir";
+// COLOQUE OS DADOS DO SEU FIREBASE AQUI
+const firebaseConfig={
+ apiKey:"SUA_API_KEY",
+ authDomain:"SEU_PROJETO.firebaseapp.com",
+ projectId:"SEU_PROJECT_ID",
+ storageBucket:"SEU_BUCKET",
+ messagingSenderId:"SEU_SENDER_ID",
+ appId:"SEU_APP_ID"
 };
 
-info.append(titulo,curtir);
-card.append(img,info);
-galeria.append(card);
-}
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const storage=getStorage(app);
 
-fotos.forEach(f=>{
-adicionarFoto(
-"https://images.unsplash.com/"+f[1]+"?auto=format&fit=crop&w=500&q=70",
-f[0]
-);
+const $=id=>document.getElementById(id);
+let usuarioAtual=null;
+let ultimaFoto=null;
+let carregando=false;
+let fim=false;
+let fotos=[];
+
+function avisar(t){$("mensagem").textContent=t;}
+
+// CADASTRO
+$("cadastrar").onclick=async()=>{
+ const email=$("email").value.trim();
+ const senha=$("senha").value;
+ if(!email||senha.length<6)return alert("Digite um e-mail e senha de pelo menos 6 caracteres.");
+ try{
+  const r=await createUserWithEmailAndPassword(auth,email,senha);
+  await setDoc(doc(db,"users",r.user.uid),{
+   email:r.user.email,avatar:"",createdAt:serverTimestamp()
+  });
+  alert("Conta criada com sucesso! 💙");
+ }catch(e){alert(e.message);}
+};
+
+// LOGIN
+$("entrar").onclick=async()=>{
+ try{
+  await signInWithEmailAndPassword(auth,$("email").value.trim(),$("senha").value);
+  alert("Bem-vindo ao Pinzy!");
+ }catch(e){alert(e.message);}
+};
+
+// SAIR
+$("sair").onclick=()=>signOut(auth);
+
+// USUÁRIO
+onAuthStateChanged(auth,async user=>{
+ usuarioAtual=user;
+ $("perfil").classList.toggle("escondido",!user);
+ if(user){
+  $("usuario").textContent="Conectado: "+user.email;
+  $("emailPerfil").textContent=user.email;
+  try{
+   const token=await user.getIdTokenResult(true);
+   const admin=token.claims.admin===true;
+   const moderador=token.claims.moderator===true;
+   $("admin").classList.toggle("escondido",!(admin||moderador));
+   $("cargo").textContent=admin?"Administrador":"Moderador";
+  }catch(e){}
+  await carregarAvatar();
+ }else{
+  $("usuario").textContent="Você não está conectado.";
+  $("admin").classList.add("escondido");
+  $("avatar").removeAttribute("src");
+ }
 });
 
-function filtrar(){
-const busca=document.getElementById("busca").value.toLowerCase();
-document.querySelectorAll(".card").forEach(card=>{
-card.style.display=card.dataset.nome.includes(busca)?"inline-block":"none";
-});
-const cards=[...document.querySelectorAll(".card")];
-document.getElementById("vazio").hidden=
-cards.some(c=>c.style.display!=="none");
+// FOTO DE PERFIL
+async function carregarAvatar(){
+ try{
+  $("avatar").src=await getDownloadURL(ref(storage,"avatars/"+usuarioAtual.uid+"/perfil"));
+ }catch(e){}
 }
 
-document.getElementById("trocar").onchange=e=>{
-const arquivo=e.target.files[0];
-if(!arquivo)return;
-const leitor=new FileReader();
-leitor.onload=()=>{
-const perfil=document.getElementById("perfil");
-perfil.src=leitor.result;
-perfil.style.display="block";
-try{localStorage.setItem("pinzyPerfil",leitor.result)}catch(err){}
-};
-leitor.readAsDataURL(arquivo);
+$("salvarAvatar").onclick=async()=>{
+ if(!usuarioAtual)return alert("Entre na sua conta primeiro.");
+ const f=$("arquivoAvatar").files[0];
+ if(!f)return alert("Escolha uma imagem.");
+ if(!f.type.startsWith("image/")||f.size>5*1024*1024)return alert("Imagem inválida ou maior que 5 MB.");
+ try{
+  avisar("Enviando foto...");
+  const local=ref(storage,"avatars/"+usuarioAtual.uid+"/perfil");
+  await uploadBytes(local,f);
+  await carregarAvatar();
+  avisar("Foto de perfil atualizada!");
+ }catch(e){avisar("Erro: "+e.message);}
 };
 
-try{
-const salvo=localStorage.getItem("pinzyPerfil");
-if(salvo){
-document.getElementById("perfil").src=salvo;
-document.getElementById("perfil").style.display="block";
+// PUBLICAR
+$("publicar").onclick=async()=>{
+ if(!usuarioAtual)return alert("Entre na sua conta para publicar.");
+ const arquivos=Array.from($("arquivoFoto").files);
+ if(!arquivos.length)return alert("Escolha uma ou mais fotos.");
+ if(arquivos.length>20)return alert("Máximo de 20 fotos por publicação.");
+
+ const titulo=$("tituloFoto").value.trim();
+ const categoria=$("categoriaFoto").value;
+
+ try{
+  for(let i=0;i<arquivos.length;i++){
+   const f=arquivos[i];
+   if(!f.type.startsWith("image/")||f.size>10*1024*1024)
+    throw new Error("Cada imagem deve ter até 10 MB.");
+
+   avisar("Enviando foto "+(i+1)+" de "+arquivos.length+"...");
+   const nome=Date.now()+"_"+i+"_"+f.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+   const caminho="photos/"+usuarioAtual.uid+"/"+nome;
+   const local=ref(storage,caminho);
+   await uploadBytes(local,f);
+   const url=await getDownloadURL(local);
+
+   await addDoc(collection(db,"photos"),{
+    uid:usuarioAtual.uid,
+    email:usuarioAtual.email,
+    imageUrl:url,
+    storagePath:caminho,
+    title:titulo||"Minha inspiração",
+    category:categoria,
+    likes:[],
+    createdAt:serverTimestamp()
+   });
+  }
+  $("arquivoFoto").value="";
+  $("tituloFoto").value="";
+  avisar("Fotos publicadas com sucesso! 💙");
+  reiniciarGaleria();
+ }catch(e){avisar("Erro ao publicar: "+e.message);}
+};
+
+// GALERIA E PAGINAÇÃO
+async function carregarFotos(){
+ if(carregando||fim)return;
+ carregando=true;
+ $("mais").disabled=true;
+ avisar("Carregando fotos...");
+
+ try{
+  let q;
+  if(ultimaFoto){
+   q=query(collection(db,"photos"),orderBy("createdAt","desc"),startAfter(ultimaFoto),limit(24));
+  }else{
+   q=query(collection(db,"photos"),orderBy("createdAt","desc"),limit(24));
+  }
+
+  const resultado=await getDocs(q);
+  if(resultado.empty)fim=true;
+
+  resultado.forEach(d=>{
+   const item={id:d.id,...d.data()};
+   fotos.push(item);
+   ultimaFoto=d;
+  });
+
+  mostrarFotos();
+  avisar(fotos.length+" fotos carregadas.");
+ }catch(e){avisar("Erro ao carregar: "+e.message);}
+ finally{
+  carregando=false;
+  $("mais").disabled=false;
+  $("mais").classList.toggle("escondido",fim);
+ }
 }
-}catch(e){}
 
-document.getElementById("arquivo").onchange=e=>{
-Array.from(e.target.files).forEach(arquivo=>{
-if(!arquivo.type.startsWith("image/"))return;
-const leitor=new FileReader();
-leitor.onload=()=>adicionarFoto(leitor.result,arquivo.name);
-leitor.readAsDataURL(arquivo);
-});
-e.target.value="";
+function mostrarFotos(){
+ const busca=$("pesquisa").value.toLowerCase().trim();
+ const categoria=$("categoria").value;
+ const lista=fotos.filter(f=>{
+  const texto=((f.title||"")+" "+(f.category||"")).toLowerCase();
+  return texto.includes(busca)&&(!categoria||f.category===categoria);
+ });
+
+ $("galeria").innerHTML="";
+ $("vazio").classList.toggle("escondido",lista.length!==0);
+
+ lista.forEach(f=>{
+  const card=document.createElement("article");
+  card.className="foto";
+
+  const img=document.createElement("img");
+  img.src=f.imageUrl;
+  img.alt=f.title||"Foto do Pinzy";
+  img.loading="lazy";
+  card.appendChild(img);
+
+  const detalhes=document.createElement("div");
+  detalhes.className="detalhes";
+
+  const titulo=document.createElement("p");
+  titulo.textContent=f.title||"Minha inspiração";
+  detalhes.appendChild(titulo);
+
+  const cat=document.createElement("small");
+  cat.textContent=f.category||"Outros";
+  detalhes.appendChild(cat);
+
+  const autor=document.createElement("p");
+  autor.textContent=f.email||"Usuário Pinzy";
+  detalhes.appendChild(autor);
+
+  const botao=document.createElement("button");
+  botao.className="curtir";
+  const curtiu=usuarioAtual&&(f.likes||[]).includes(usuarioAtual.uid);
+  botao.textContent=(curtiu?"❤️":"🤍")+" "+(f.likes||[]).length;
+  botao.onclick=()=>curtirFoto(f);
+  detalhes.appendChild(botao);
+
+  if(usuarioAtual&&usuarioAtual.uid===f.uid){
+   const excluir=document.createElement("button");
+   excluir.textContent="Excluir";
+   excluir.style.marginLeft="6px";
+   excluir.onclick=()=>excluirMinhaFoto(f);
+   detalhes.appendChild(excluir);
+  }
+
+  card.appendChild(detalhes);
+  $("galeria").appendChild(card);
+ });
+}
+
+// CURTIDAS
+async function curtirFoto(f){
+ if(!usuarioAtual)return alert("Entre para curtir.");
+ try{
+  const curtidas=f.likes||[];
+  const jaCurtiu=curtidas.includes(usuarioAtual.uid);
+  await updateDoc(doc(db,"photos",f.id),{
+   likes:jaCurtiu?arrayRemove(usuarioAtual.uid):arrayUnion(usuarioAtual.uid)
+  });
+  f.likes=jaCurtiu
+   ?curtidas.filter(id=>id!==usuarioAtual.uid)
+   :[...curtidas,usuarioAtual.uid];
+  mostrarFotos();
+ }catch(e){alert("Erro ao curtir: "+e.message);}
+}
+
+// EXCLUIR PRÓPRIA FOTO
+async function excluirMinhaFoto(f){
+ if(!usuarioAtual||usuarioAtual.uid!==f.uid)return;
+ if(!confirm("Deseja excluir esta publicação?"))return;
+ try{
+  await deleteDoc(doc(db,"photos",f.id));
+  if(f.storagePath){
+   try{await deleteObject(ref(storage,f.storagePath));}catch(e){}
+  }
+  fotos=fotos.filter(x=>x.id!==f.id);
+  mostrarFotos();
+  avisar("Publicação excluída.");
+ }catch(e){alert("Erro ao excluir: "+e.message);}
+}
+
+// EXCLUIR PELO ADMIN
+$("excluir").onclick=async()=>{
+ if(!usuarioAtual)return;
+ const token=await usuarioAtual.getIdTokenResult(true);
+ if(token.claims.admin!==true&&token.claims.moderator!==true)
+  return alert("Sem permissão.");
+
+ const id=$("idExcluir").value.trim();
+ if(!id)return alert("Digite o ID da publicação.");
+ if(!confirm("Excluir esta publicação?"))return;
+
+ try{
+  const f=fotos.find(x=>x.id===id);
+  await deleteDoc(doc(db,"photos",id));
+  if(f?.storagePath){
+   try{await deleteObject(ref(storage,f.storagePath));}catch(e){}
+  }
+  fotos=fotos.filter(x=>x.id!==id);
+  mostrarFotos();
+  avisar("Publicação excluída.");
+ }catch(e){alert("Erro: "+e.message);}
 };
+
+// PESQUISA E CATEGORIAS
+$("pesquisa").addEventListener("input",mostrarFotos);
+$("categoria").addEventListener("change",mostrarFotos);
+
+function reiniciarGaleria(){
+ fotos=[];
+ ultimaFoto=null;
+ fim=false;
+ $("galeria").innerHTML="";
+ carregarFotos();
+}
+
+$("mais").onclick=carregarFotos;
+
+// INICIAR
+carregarFotos();
+
 </script>
 </body>
 </html>
