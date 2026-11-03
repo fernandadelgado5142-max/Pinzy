@@ -3,409 +3,528 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pinzy 💙</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pinzy</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f4f6fc;color:#202b45;font-family:Arial}
-header{position:sticky;top:0;background:white;padding:12px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;box-shadow:0 2px 8px #ddd;z-index:5}
-.logo{font-size:26px;font-weight:bold;color:#1769ff}
-input,select{padding:12px;border:1px solid #ddd;border-radius:20px;max-width:100%}
-#pesquisa{flex:1;min-width:130px}
-button{padding:11px 15px;border:0;border-radius:20px;background:#1769ff;color:white;font-weight:bold;cursor:pointer}
-main{max-width:1200px;margin:auto;padding:15px}
-.painel{background:white;padding:15px;border-radius:14px;margin:14px 0}
-#galeria{columns:2;column-gap:12px}
-.foto{display:inline-block;width:100%;break-inside:avoid;background:white;margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px #ddd}
-.foto img{width:100%;display:block}
-.detalhes{padding:10px}
-.detalhes p{overflow-wrap:anywhere}
-.curtir{background:#edf2ff;color:#1769ff}
-.acoes{display:flex;gap:8px;flex-wrap:wrap}
-.escondido{display:none!important}
-#avatar{width:75px;height:75px;border-radius:50%;object-fit:cover}
-#mensagem{color:#1769ff;font-weight:bold}
-#mais{display:block;margin:20px auto}
-@media(min-width:650px){#galeria{columns:3}}
-@media(min-width:950px){#galeria{columns:4}}
+body{margin:0;background:#f7f7f7;color:#222;font-family:Arial,sans-serif}
+header{position:sticky;top:0;background:white;padding:12px;display:flex;align-items:center;gap:10px;z-index:5;box-shadow:0 2px 8px #0001}
+.logo{font-size:25px;font-weight:bold;color:#e60023}
+input,select,textarea{padding:12px;border:1px solid #ddd;border-radius:12px;font:inherit;width:100%;margin:6px 0}
+button{border:0;border-radius:22px;padding:11px 16px;background:#e60023;color:white;font-weight:bold;cursor:pointer}
+.secondary{background:#eee;color:#222}
+#search{flex:1;min-width:60px;background:#f2f2f2;border:0;border-radius:25px}
+main{max-width:1100px;margin:auto;padding:14px}
+.panel{background:white;border-radius:15px;padding:16px;margin-bottom:15px}
+.hidden{display:none!important}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+#gallery{columns:2;column-gap:12px}
+.photo{display:inline-block;width:100%;break-inside:avoid;background:white;border-radius:13px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px #0001}
+.photo img{width:100%;display:block}
+.photo-info{padding:10px}
+.photo-info p{margin:6px 0}
+.small{font-size:12px;color:#777}
+#userInfo{display:flex;align-items:center;gap:7px}
+#avatar{width:34px;height:34px;border-radius:50%;object-fit:cover}
+#commentsBox{position:fixed;inset:0;background:#0009;z-index:10;display:flex;align-items:center;justify-content:center;padding:15px}
+#commentsContent{background:white;border-radius:16px;padding:18px;width:100%;max-width:450px;max-height:85vh;overflow:auto}
+@media(min-width:650px){#gallery{columns:3}}
+@media(min-width:950px){#gallery{columns:4}}
 </style>
 </head>
 <body>
 
 <header>
-<div class="logo">💙 PINZY</div>
-<input id="pesquisa" placeholder="🔍 Pesquisar fotos...">
-<select id="categoria">
-<option value="">Todas as categorias</option>
-<option>Tatuagens</option><option>Desenhos</option>
-<option>Pessoas</option><option>Animais</option>
-<option>Natureza</option><option>Carros</option>
-<option>Moda</option><option>Paisagens</option>
-<option>Decoração</option><option>Comida</option><option>Outros</option>
-</select>
-<button onclick="document.getElementById('arquivoFoto').scrollIntoView({behavior:'smooth'})">＋ Publicar</button>
+  <div class="logo">Pinzy</div>
+  <input id="search" placeholder="Pesquisar fotos..." />
+  <button id="uploadOpen" class="hidden">＋</button>
+  <div id="userInfo" class="hidden">
+    <img id="avatar" alt="Perfil">
+    <button id="logoutBtn" class="secondary">Sair</button>
+  </div>
 </header>
 
 <main>
-<h2>Descubra inspirações 💙</h2>
-<p>Compartilhe suas fotos e descubra novas ideias!</p>
+  <section id="loginPanel" class="panel">
+    <h2>Bem-vindo ao Pinzy!</h2>
+    <p>Entre para descobrir e compartilhar imagens.</p>
+    <button id="googleBtn">Entrar com Google</button>
+    <hr>
+    <h3>Ou use seu e-mail</h3>
+    <input id="email" type="email" placeholder="Seu e-mail">
+    <input id="password" type="password" placeholder="Sua senha">
+    <div class="actions">
+      <button id="loginBtn">Entrar</button>
+      <button id="registerBtn" class="secondary">Criar conta</button>
+    </div>
+    <p id="loginMessage" class="small"></p>
+  </section>
 
-<section class="painel">
-<h3>👤 Minha conta</h3>
-<input id="email" type="email" placeholder="Seu e-mail" style="width:100%;margin:5px 0">
-<input id="senha" type="password" placeholder="Sua senha" style="width:100%;margin:5px 0">
-<div class="acoes">
-<button id="cadastrar">Criar conta</button>
-<button id="entrar">Entrar</button>
-<button id="sair">Sair</button>
-</div>
-<p id="usuario">Você não está conectado.</p>
-</section>
+  <section id="app" class="hidden">
+    <section class="panel">
+      <h2>Explore</h2>
+      <div class="actions" id="categories">
+        <button class="secondary" data-cat="Todas">Todas</button>
+        <button class="secondary" data-cat="Tatuagens">Tatuagens</button>
+        <button class="secondary" data-cat="Desenhos">Desenhos</button>
+        <button class="secondary" data-cat="Anime">Anime</button>
+        <button class="secondary" data-cat="Paisagens">Paisagens</button>
+        <button class="secondary" data-cat="Outros">Outros</button>
+      </div>
+    </section>
 
-<section id="perfil" class="painel escondido">
-<h3>Meu perfil</h3>
-<img id="avatar" alt="Foto de perfil">
-<p id="emailPerfil"></p>
-<input id="arquivoAvatar" type="file" accept="image/*">
-<button id="salvarAvatar">Alterar foto</button>
-</section>
+    <section id="uploadPanel" class="panel hidden">
+      <h3>Publicar imagens</h3>
+      <input id="photoTitle" placeholder="Descrição da imagem">
+      <select id="photoCategory">
+        <option>Tatuagens</option>
+        <option>Desenhos</option>
+        <option>Anime</option>
+        <option>Paisagens</option>
+        <option>Outros</option>
+      </select>
+      <input id="photoFiles" type="file" accept="image/*" multiple>
+      <button id="publishBtn">Publicar</button>
+      <p id="uploadMessage" class="small"></p>
+    </section>
 
-<section class="painel">
-<h3>📸 Publicar fotos</h3>
-<input id="arquivoFoto" type="file" accept="image/*" multiple>
-<input id="tituloFoto" placeholder="Nome da publicação" style="width:100%;margin:8px 0">
-<select id="categoriaFoto" style="width:100%">
-<option>Tatuagens</option><option>Desenhos</option>
-<option>Pessoas</option><option>Animais</option>
-<option>Natureza</option><option>Carros</option>
-<option>Moda</option><option>Paisagens</option>
-<option>Decoração</option><option>Comida</option><option>Outros</option>
-</select>
-<button id="publicar" style="margin-top:10px">Publicar</button>
-</section>
+    <section class="panel">
+      <h3>Meu perfil</h3>
+      <p id="myName"></p>
+      <input id="newName" placeholder="Seu nome">
+      <label>Foto do perfil</label>
+      <input id="profileFile" type="file" accept="image/*">
+      <button id="saveProfileBtn">Salvar perfil</button>
+      <p id="profileMessage" class="small"></p>
+    </section>
 
-<section id="admin" class="painel escondido">
-<h3>👑 Painel administrativo</h3>
-<p id="cargo"></p>
-<input id="idExcluir" placeholder="ID da publicação">
-<button id="excluir">Excluir publicação</button>
-</section>
-
-<p id="mensagem">Conectando ao Pinzy...</p>
-<div id="galeria"></div>
-<p id="vazio" class="escondido">Nenhuma foto encontrada.</p>
-<button id="mais">Carregar mais fotos</button>
+    <h2>Imagens</h2>
+    <div id="gallery"></div>
+    <button id="moreBtn" class="secondary">Carregar mais</button>
+    <p id="galleryMessage" class="small"></p>
+  </section>
 </main>
 
+<div id="commentsBox" class="hidden">
+  <div id="commentsContent">
+    <h3>Comentários</h3>
+    <div id="commentsList"></div>
+    <textarea id="commentText" placeholder="Escreva um comentário..."></textarea>
+    <button id="sendCommentBtn">Enviar</button>
+    <button id="closeCommentsBtn" class="secondary">Fechar</button>
+  </div>
+</div>
+
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
- getAuth,createUserWithEmailAndPassword,
- signInWithEmailAndPassword,signOut,onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  onAuthStateChanged, signOut, updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 import {
- getFirestore,collection,addDoc,getDocs,query,
- orderBy,limit,startAfter,doc,updateDoc,deleteDoc,
- arrayUnion,arrayRemove,serverTimestamp,setDoc
+  getFirestore, doc, setDoc, getDoc, addDoc,
+  collection, query, orderBy, limit, startAfter,
+  getDocs, updateDoc, arrayUnion, arrayRemove,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 import {
- getStorage,ref,uploadBytes,getDownloadURL,deleteObject
+  getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// COLOQUE OS DADOS DO SEU FIREBASE AQUI
-const firebaseConfig={
- apiKey:"SUA_API_KEY",
- authDomain:"SEU_PROJETO.firebaseapp.com",
- projectId:"SEU_PROJECT_ID",
- storageBucket:"SEU_BUCKET",
- messagingSenderId:"SEU_SENDER_ID",
- appId:"SEU_APP_ID"
+/* COLOQUE AQUI OS DADOS DO SEU FIREBASE */
+const firebaseConfig = {
+  apiKey: "COLOQUE_SUA_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_PROJETO.firebasestorage.app",
+  messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+  appId: "SEU_APP_ID"
 };
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-const storage=getStorage(app);
+const appFirebase = initializeApp(firebaseConfig);
+const auth = getAuth(appFirebase);
+const db = getFirestore(appFirebase);
+const storage = getStorage(appFirebase);
 
-const $=id=>document.getElementById(id);
-let usuarioAtual=null;
-let ultimaFoto=null;
-let carregando=false;
-let fim=false;
-let fotos=[];
+let user = null;
+let lastDocument = null;
+let currentCategory = "Todas";
+let currentPhotoId = null;
+let photos = [];
+let loading = false;
+let hasMore = true;
 
-function avisar(t){$("mensagem").textContent=t;}
+const $ = id => document.getElementById(id);
 
-// CADASTRO
-$("cadastrar").onclick=async()=>{
- const email=$("email").value.trim();
- const senha=$("senha").value;
- if(!email||senha.length<6)return alert("Digite um e-mail e senha de pelo menos 6 caracteres.");
- try{
-  const r=await createUserWithEmailAndPassword(auth,email,senha);
-  await setDoc(doc(db,"users",r.user.uid),{
-   email:r.user.email,avatar:"",createdAt:serverTimestamp()
-  });
-  alert("Conta criada com sucesso! 💙");
- }catch(e){alert(e.message);}
-};
+function message(id, text) {
+  $(id).textContent = text;
+}
 
-// LOGIN
-$("entrar").onclick=async()=>{
- try{
-  await signInWithEmailAndPassword(auth,$("email").value.trim(),$("senha").value);
-  alert("Bem-vindo ao Pinzy!");
- }catch(e){alert(e.message);}
-};
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[char]);
+}
 
-// SAIR
-$("sair").onclick=()=>signOut(auth);
-
-// USUÁRIO
-onAuthStateChanged(auth,async user=>{
- usuarioAtual=user;
- $("perfil").classList.toggle("escondido",!user);
- if(user){
-  $("usuario").textContent="Conectado: "+user.email;
-  $("emailPerfil").textContent=user.email;
-  try{
-   const token=await user.getIdTokenResult(true);
-   const admin=token.claims.admin===true;
-   const moderador=token.claims.moderator===true;
-   $("admin").classList.toggle("escondido",!(admin||moderador));
-   $("cargo").textContent=admin?"Administrador":"Moderador";
-  }catch(e){}
-  await carregarAvatar();
- }else{
-  $("usuario").textContent="Você não está conectado.";
-  $("admin").classList.add("escondido");
-  $("avatar").removeAttribute("src");
- }
+/* LOGIN GOOGLE */
+$("googleBtn").addEventListener("click", async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    message("loginMessage", error.message);
+  }
 });
 
-// FOTO DE PERFIL
-async function carregarAvatar(){
- try{
-  $("avatar").src=await getDownloadURL(ref(storage,"avatars/"+usuarioAtual.uid+"/perfil"));
- }catch(e){}
+/* LOGIN E CADASTRO */
+$("loginBtn").addEventListener("click", async () => {
+  try {
+    await signInWithEmailAndPassword(
+      auth, $("email").value.trim(), $("password").value
+    );
+  } catch (error) {
+    message("loginMessage", error.message);
+  }
+});
+
+$("registerBtn").addEventListener("click", async () => {
+  try {
+    await createUserWithEmailAndPassword(
+      auth, $("email").value.trim(), $("password").value
+    );
+  } catch (error) {
+    message("loginMessage", error.message);
+  }
+});
+
+$("logoutBtn").addEventListener("click", () => signOut(auth));
+
+/* ESTADO DO USUÁRIO */
+onAuthStateChanged(auth, async currentUser => {
+  user = currentUser;
+
+  if (!user) {
+    $("loginPanel").classList.remove("hidden");
+    $("app").classList.add("hidden");
+    $("userInfo").classList.add("hidden");
+    $("uploadOpen").classList.add("hidden");
+    return;
+  }
+
+  $("loginPanel").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("userInfo").classList.remove("hidden");
+  $("uploadOpen").classList.remove("hidden");
+
+  $("avatar").src = user.photoURL || "https://placehold.co/100";
+  $("myName").textContent = user.displayName || user.email;
+  $("newName").value = user.displayName || "";
+
+  await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    name: user.displayName || user.email,
+    email: user.email,
+    photoURL: user.photoURL || "",
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+
+  resetGallery();
+});
+
+/* ABRIR PUBLICAÇÃO */
+$("uploadOpen").addEventListener("click", () => {
+  $("uploadPanel").classList.toggle("hidden");
+});
+
+/* PUBLICAR FOTOS */
+$("publishBtn").addEventListener("click", async () => {
+  const files = [...$("photoFiles").files];
+  const title = $("photoTitle").value.trim();
+  const category = $("photoCategory").value;
+
+  if (!files.length) {
+    message("uploadMessage", "Escolha pelo menos uma imagem.");
+    return;
+  }
+
+  if (files.length > 20) {
+    message("uploadMessage", "Escolha no máximo 20 imagens por vez.");
+    return;
+  }
+
+  try {
+    $("publishBtn").disabled = true;
+
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) continue;
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error("Cada imagem deve ter no máximo 10 MB.");
+      }
+
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const storagePath =
+        `photos/${user.uid}/${Date.now()}_${safeName}`;
+
+      const storageRef = ref(storage, storagePath);
+      await uploadBytes(storageRef, file);
+      const imageUrl = await getDownloadURL(storageRef);
+
+      await addDoc(collection(db, "photos"), {
+        uid: user.uid,
+        authorName: user.displayName || user.email,
+        authorPhoto: user.photoURL || "",
+        title,
+        category,
+        imageUrl,
+        storagePath,
+        likes: [],
+        createdAt: serverTimestamp()
+      });
+    }
+
+    $("photoFiles").value = "";
+    $("photoTitle").value = "";
+    message("uploadMessage", "Imagens publicadas!");
+    resetGallery();
+  } catch (error) {
+    message("uploadMessage", "Erro: " + error.message);
+  } finally {
+    $("publishBtn").disabled = false;
+  }
+});
+
+/* CARREGAR FOTOS COM PAGINAÇÃO */
+async function loadPhotos() {
+  if (loading || !hasMore) return;
+  loading = true;
+  message("galleryMessage", "Carregando imagens...");
+
+  try {
+    let q;
+
+    if (lastDocument) {
+      q = query(
+        collection(db, "photos"),
+        orderBy("createdAt", "desc"),
+        startAfter(lastDocument),
+        limit(24)
+      );
+    } else {
+      q = query(
+        collection(db, "photos"),
+        orderBy("createdAt", "desc"),
+        limit(24)
+      );
+    }
+
+    const result = await getDocs(q);
+
+    if (result.empty) {
+      hasMore = false;
+    } else {
+      lastDocument = result.docs[result.docs.length - 1];
+      photos.push(...result.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      })));
+      if (result.docs.length < 24) hasMore = false;
+    }
+
+    renderGallery();
+    message("galleryMessage", photos.length ? "" : "Ainda não há imagens.");
+  } catch (error) {
+    message("galleryMessage", "Erro ao carregar: " + error.message);
+  } finally {
+    loading = false;
+    $("moreBtn").classList.toggle("hidden", !hasMore);
+  }
 }
 
-$("salvarAvatar").onclick=async()=>{
- if(!usuarioAtual)return alert("Entre na sua conta primeiro.");
- const f=$("arquivoAvatar").files[0];
- if(!f)return alert("Escolha uma imagem.");
- if(!f.type.startsWith("image/")||f.size>5*1024*1024)return alert("Imagem inválida ou maior que 5 MB.");
- try{
-  avisar("Enviando foto...");
-  const local=ref(storage,"avatars/"+usuarioAtual.uid+"/perfil");
-  await uploadBytes(local,f);
-  await carregarAvatar();
-  avisar("Foto de perfil atualizada!");
- }catch(e){avisar("Erro: "+e.message);}
-};
+function resetGallery() {
+  photos = [];
+  lastDocument = null;
+  hasMore = true;
+  $("gallery").innerHTML = "";
+  loadPhotos();
+}
 
-// PUBLICAR
-$("publicar").onclick=async()=>{
- if(!usuarioAtual)return alert("Entre na sua conta para publicar.");
- const arquivos=Array.from($("arquivoFoto").files);
- if(!arquivos.length)return alert("Escolha uma ou mais fotos.");
- if(arquivos.length>20)return alert("Máximo de 20 fotos por publicação.");
+$("moreBtn").addEventListener("click", loadPhotos);
 
- const titulo=$("tituloFoto").value.trim();
- const categoria=$("categoriaFoto").value;
+/* PESQUISA E CATEGORIAS */
+$("search").addEventListener("input", renderGallery);
 
- try{
-  for(let i=0;i<arquivos.length;i++){
-   const f=arquivos[i];
-   if(!f.type.startsWith("image/")||f.size>10*1024*1024)
-    throw new Error("Cada imagem deve ter até 10 MB.");
+$("categories").addEventListener("click", event => {
+  const button = event.target.closest("button[data-cat]");
+  if (!button) return;
+  currentCategory = button.dataset.cat;
+  renderGallery();
+});
 
-   avisar("Enviando foto "+(i+1)+" de "+arquivos.length+"...");
-   const nome=Date.now()+"_"+i+"_"+f.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-   const caminho="photos/"+usuarioAtual.uid+"/"+nome;
-   const local=ref(storage,caminho);
-   await uploadBytes(local,f);
-   const url=await getDownloadURL(local);
+function renderGallery() {
+  const search = $("search").value.toLowerCase().trim();
 
-   await addDoc(collection(db,"photos"),{
-    uid:usuarioAtual.uid,
-    email:usuarioAtual.email,
-    imageUrl:url,
-    storagePath:caminho,
-    title:titulo||"Minha inspiração",
-    category:categoria,
-    likes:[],
-    createdAt:serverTimestamp()
-   });
-  }
-  $("arquivoFoto").value="";
-  $("tituloFoto").value="";
-  avisar("Fotos publicadas com sucesso! 💙");
-  reiniciarGaleria();
- }catch(e){avisar("Erro ao publicar: "+e.message);}
-};
-
-// GALERIA E PAGINAÇÃO
-async function carregarFotos(){
- if(carregando||fim)return;
- carregando=true;
- $("mais").disabled=true;
- avisar("Carregando fotos...");
-
- try{
-  let q;
-  if(ultimaFoto){
-   q=query(collection(db,"photos"),orderBy("createdAt","desc"),startAfter(ultimaFoto),limit(24));
-  }else{
-   q=query(collection(db,"photos"),orderBy("createdAt","desc"),limit(24));
-  }
-
-  const resultado=await getDocs(q);
-  if(resultado.empty)fim=true;
-
-  resultado.forEach(d=>{
-   const item={id:d.id,...d.data()};
-   fotos.push(item);
-   ultimaFoto=d;
+  const filtered = photos.filter(photo => {
+    const text = `${photo.title || ""} ${photo.authorName || ""} ${photo.category || ""}`.toLowerCase();
+    const matchesSearch = text.includes(search);
+    const matchesCategory =
+      currentCategory === "Todas" || photo.category === currentCategory;
+    return matchesSearch && matchesCategory;
   });
 
-  mostrarFotos();
-  avisar(fotos.length+" fotos carregadas.");
- }catch(e){avisar("Erro ao carregar: "+e.message);}
- finally{
-  carregando=false;
-  $("mais").disabled=false;
-  $("mais").classList.toggle("escondido",fim);
- }
-}
+  $("gallery").innerHTML = filtered.map(photo => {
+    const likes = Array.isArray(photo.likes) ? photo.likes : [];
+    const liked = user && likes.includes(user.uid);
 
-function mostrarFotos(){
- const busca=$("pesquisa").value.toLowerCase().trim();
- const categoria=$("categoria").value;
- const lista=fotos.filter(f=>{
-  const texto=((f.title||"")+" "+(f.category||"")).toLowerCase();
-  return texto.includes(busca)&&(!categoria||f.category===categoria);
- });
+    return `
+      <article class="photo">
+        <img src="${escapeHTML(photo.imageUrl)}" alt="${escapeHTML(photo.title || "Imagem")}" loading="lazy">
+        <div class="photo-info">
+          <strong>${escapeHTML(photo.title || "Sem descrição")}</strong>
+          <p class="small">${escapeHTML(photo.category || "Outros")}</p>
+          <p class="small">Por ${escapeHTML(photo.authorName || "Usuário")}</p>
+          <div class="actions">
+            <button data-like="${photo.id}" class="${liked ? "" : "secondary"}">
+              ${liked ? "♥" : "♡"} ${likes.length}
+            </button>
+            <button class="secondary" data-comment="${photo.id}">Comentários</button>
+          </div>
+        </div>
+      </article>`;
+  }).join("");
 
- $("galeria").innerHTML="";
- $("vazio").classList.toggle("escondido",lista.length!==0);
-
- lista.forEach(f=>{
-  const card=document.createElement("article");
-  card.className="foto";
-
-  const img=document.createElement("img");
-  img.src=f.imageUrl;
-  img.alt=f.title||"Foto do Pinzy";
-  img.loading="lazy";
-  card.appendChild(img);
-
-  const detalhes=document.createElement("div");
-  detalhes.className="detalhes";
-
-  const titulo=document.createElement("p");
-  titulo.textContent=f.title||"Minha inspiração";
-  detalhes.appendChild(titulo);
-
-  const cat=document.createElement("small");
-  cat.textContent=f.category||"Outros";
-  detalhes.appendChild(cat);
-
-  const autor=document.createElement("p");
-  autor.textContent=f.email||"Usuário Pinzy";
-  detalhes.appendChild(autor);
-
-  const botao=document.createElement("button");
-  botao.className="curtir";
-  const curtiu=usuarioAtual&&(f.likes||[]).includes(usuarioAtual.uid);
-  botao.textContent=(curtiu?"❤️":"🤍")+" "+(f.likes||[]).length;
-  botao.onclick=()=>curtirFoto(f);
-  detalhes.appendChild(botao);
-
-  if(usuarioAtual&&usuarioAtual.uid===f.uid){
-   const excluir=document.createElement("button");
-   excluir.textContent="Excluir";
-   excluir.style.marginLeft="6px";
-   excluir.onclick=()=>excluirMinhaFoto(f);
-   detalhes.appendChild(excluir);
-  }
-
-  card.appendChild(detalhes);
-  $("galeria").appendChild(card);
- });
-}
-
-// CURTIDAS
-async function curtirFoto(f){
- if(!usuarioAtual)return alert("Entre para curtir.");
- try{
-  const curtidas=f.likes||[];
-  const jaCurtiu=curtidas.includes(usuarioAtual.uid);
-  await updateDoc(doc(db,"photos",f.id),{
-   likes:jaCurtiu?arrayRemove(usuarioAtual.uid):arrayUnion(usuarioAtual.uid)
+  $("gallery").querySelectorAll("[data-like]").forEach(button => {
+    button.addEventListener("click", () => toggleLike(button.dataset.like));
   });
-  f.likes=jaCurtiu
-   ?curtidas.filter(id=>id!==usuarioAtual.uid)
-   :[...curtidas,usuarioAtual.uid];
-  mostrarFotos();
- }catch(e){alert("Erro ao curtir: "+e.message);}
+
+  $("gallery").querySelectorAll("[data-comment]").forEach(button => {
+    button.addEventListener("click", () => openComments(button.dataset.comment));
+  });
 }
 
-// EXCLUIR PRÓPRIA FOTO
-async function excluirMinhaFoto(f){
- if(!usuarioAtual||usuarioAtual.uid!==f.uid)return;
- if(!confirm("Deseja excluir esta publicação?"))return;
- try{
-  await deleteDoc(doc(db,"photos",f.id));
-  if(f.storagePath){
-   try{await deleteObject(ref(storage,f.storagePath));}catch(e){}
+/* CURTIDAS */
+async function toggleLike(photoId) {
+  if (!user) return;
+
+  try {
+    const photoRef = doc(db, "photos", photoId);
+    const photo = photos.find(item => item.id === photoId);
+    if (!photo) return;
+
+    const likes = Array.isArray(photo.likes) ? photo.likes : [];
+
+    if (likes.includes(user.uid)) {
+      await updateDoc(photoRef, { likes: arrayRemove(user.uid) });
+    } else {
+      await updateDoc(photoRef, { likes: arrayUnion(user.uid) });
+    }
+
+    const updated = await getDoc(photoRef);
+    photo.likes = updated.data().likes || [];
+    renderGallery();
+  } catch (error) {
+    alert("Não foi possível curtir: " + error.message);
   }
-  fotos=fotos.filter(x=>x.id!==f.id);
-  mostrarFotos();
-  avisar("Publicação excluída.");
- }catch(e){alert("Erro ao excluir: "+e.message);}
 }
 
-// EXCLUIR PELO ADMIN
-$("excluir").onclick=async()=>{
- if(!usuarioAtual)return;
- const token=await usuarioAtual.getIdTokenResult(true);
- if(token.claims.admin!==true&&token.claims.moderator!==true)
-  return alert("Sem permissão.");
+/* COMENTÁRIOS */
+async function openComments(photoId) {
+  currentPhotoId = photoId;
+  $("commentsBox").classList.remove("hidden");
+  $("commentsList").textContent = "Carregando...";
 
- const id=$("idExcluir").value.trim();
- if(!id)return alert("Digite o ID da publicação.");
- if(!confirm("Excluir esta publicação?"))return;
+  try {
+    const q = query(
+      collection(db, "photos", photoId, "comments"),
+      orderBy("createdAt", "asc"),
+      limit(100)
+    );
 
- try{
-  const f=fotos.find(x=>x.id===id);
-  await deleteDoc(doc(db,"photos",id));
-  if(f?.storagePath){
-   try{await deleteObject(ref(storage,f.storagePath));}catch(e){}
+    const result = await getDocs(q);
+
+    $("commentsList").innerHTML = result.docs.map(item => {
+      const comment = item.data();
+      return `<p><strong>${escapeHTML(comment.name || "Usuário")}</strong><br>${escapeHTML(comment.text || "")}</p>`;
+    }).join("") || "<p>Ainda não há comentários.</p>";
+  } catch (error) {
+    $("commentsList").textContent = "Erro ao carregar comentários.";
   }
-  fotos=fotos.filter(x=>x.id!==id);
-  mostrarFotos();
-  avisar("Publicação excluída.");
- }catch(e){alert("Erro: "+e.message);}
-};
-
-// PESQUISA E CATEGORIAS
-$("pesquisa").addEventListener("input",mostrarFotos);
-$("categoria").addEventListener("change",mostrarFotos);
-
-function reiniciarGaleria(){
- fotos=[];
- ultimaFoto=null;
- fim=false;
- $("galeria").innerHTML="";
- carregarFotos();
 }
 
-$("mais").onclick=carregarFotos;
+$("sendCommentBtn").addEventListener("click", async () => {
+  const text = $("commentText").value.trim();
+  if (!text || !currentPhotoId) return;
 
-// INICIAR
-carregarFotos();
+  try {
+    await addDoc(
+      collection(db, "photos", currentPhotoId, "comments"),
+      {
+        uid: user.uid,
+        name: user.displayName || user.email,
+        text,
+        createdAt: serverTimestamp()
+      }
+    );
 
+    $("commentText").value = "";
+    openComments(currentPhotoId);
+  } catch (error) {
+    alert("Erro ao comentar: " + error.message);
+  }
+});
+
+function closeComments() {
+  $("commentsBox").classList.add("hidden");
+  currentPhotoId = null;
+}
+
+$("closeCommentsBtn").addEventListener("click", closeComments);
+
+/* PERFIL */
+$("saveProfileBtn").addEventListener("click", async () => {
+  try {
+    const name = $("newName").value.trim();
+    const file = $("profileFile").files[0];
+
+    if (name) {
+      await updateProfile(user, { displayName: name });
+    }
+
+    let photoURL = user.photoURL || "";
+
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Escolha uma imagem.");
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("A foto deve ter no máximo 5 MB.");
+      }
+
+      const path = `profiles/${user.uid}/avatar`;
+      const imageRef = ref(storage, path);
+      await uploadBytes(imageRef, file);
+      photoURL = await getDownloadURL(imageRef);
+      await updateProfile(user, { photoURL });
+    }
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name: user.displayName || user.email,
+      email: user.email,
+      photoURL,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    $("avatar").src = photoURL || "https://placehold.co/100";
+    $("myName").textContent = user.displayName || user.email;
+    message("profileMessage", "Perfil atualizado!");
+  } catch (error) {
+    message("profileMessage", "Erro: " + error.message);
+  }
+});
 </script>
 </body>
 </html>
