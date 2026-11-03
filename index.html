@@ -3,528 +3,521 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pinzy</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f7f7f7;color:#222;font-family:Arial,sans-serif}
-header{position:sticky;top:0;background:white;padding:12px;display:flex;align-items:center;gap:10px;z-index:5;box-shadow:0 2px 8px #0001}
-.logo{font-size:25px;font-weight:bold;color:#e60023}
-input,select,textarea{padding:12px;border:1px solid #ddd;border-radius:12px;font:inherit;width:100%;margin:6px 0}
-button{border:0;border-radius:22px;padding:11px 16px;background:#e60023;color:white;font-weight:bold;cursor:pointer}
-.secondary{background:#eee;color:#222}
-#search{flex:1;min-width:60px;background:#f2f2f2;border:0;border-radius:25px}
-main{max-width:1100px;margin:auto;padding:14px}
-.panel{background:white;border-radius:15px;padding:16px;margin-bottom:15px}
-.hidden{display:none!important}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-#gallery{columns:2;column-gap:12px}
-.photo{display:inline-block;width:100%;break-inside:avoid;background:white;border-radius:13px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 8px #0001}
-.photo img{width:100%;display:block}
-.photo-info{padding:10px}
-.photo-info p{margin:6px 0}
-.small{font-size:12px;color:#777}
-#userInfo{display:flex;align-items:center;gap:7px}
-#avatar{width:34px;height:34px;border-radius:50%;object-fit:cover}
-#commentsBox{position:fixed;inset:0;background:#0009;z-index:10;display:flex;align-items:center;justify-content:center;padding:15px}
-#commentsContent{background:white;border-radius:16px;padding:18px;width:100%;max-width:450px;max-height:85vh;overflow:auto}
-@media(min-width:650px){#gallery{columns:3}}
-@media(min-width:950px){#gallery{columns:4}}
+body{margin:0;font-family:Arial,sans-serif;background:#f8f5ff;color:#30263b}
+header{background:#8b5cf6;color:white;padding:20px;text-align:center}
+header h1{margin:0}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:white;position:sticky;top:0;z-index:5}
+button{border:0;border-radius:10px;padding:11px 15px;background:#8b5cf6;color:white;font-weight:bold;cursor:pointer}
+nav button{white-space:nowrap}
+main{max-width:850px;margin:auto;padding:16px}
+.page{display:none}
+.page.active{display:block}
+.panel,.post{background:white;padding:16px;border-radius:15px;margin-bottom:16px;box-shadow:0 2px 10px #0000000d}
+input,textarea{width:100%;padding:12px;margin:7px 0;border:1px solid #ddd;border-radius:9px;font:inherit}
+textarea{min-height:75px}
+.post img{width:100%;max-height:600px;object-fit:contain;border-radius:10px;background:#eee}
+.post small{color:#777}
+.actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.actions button{padding:9px 12px}
+.muted{color:#777}
+#userInfo{font-size:14px;text-align:center;padding:10px}
+#preview{max-width:100%;max-height:250px;display:none;margin:10px auto}
+footer{text-align:center;color:#888;padding:25px}
 </style>
 </head>
+
 <body>
 
 <header>
-  <div class="logo">Pinzy</div>
-  <input id="search" placeholder="Pesquisar fotos..." />
-  <button id="uploadOpen" class="hidden">＋</button>
-  <div id="userInfo" class="hidden">
-    <img id="avatar" alt="Perfil">
-    <button id="logoutBtn" class="secondary">Sair</button>
-  </div>
+<h1>💜 Pinzy</h1>
+<p>Compartilhe suas ideias e inspirações</p>
 </header>
 
+<div id="userInfo">Você não está conectado.</div>
+
+<nav>
+<button data-page="home">Início</button>
+<button data-page="explore">Explorar</button>
+<button data-page="favorites">Favoritos</button>
+<button data-page="publish">Publicar</button>
+<button data-page="profile">Perfil</button>
+<button data-page="admin">Admin</button>
+</nav>
+
 <main>
-  <section id="loginPanel" class="panel">
-    <h2>Bem-vindo ao Pinzy!</h2>
-    <p>Entre para descobrir e compartilhar imagens.</p>
-    <button id="googleBtn">Entrar com Google</button>
-    <hr>
-    <h3>Ou use seu e-mail</h3>
-    <input id="email" type="email" placeholder="Seu e-mail">
-    <input id="password" type="password" placeholder="Sua senha">
-    <div class="actions">
-      <button id="loginBtn">Entrar</button>
-      <button id="registerBtn" class="secondary">Criar conta</button>
-    </div>
-    <p id="loginMessage" class="small"></p>
-  </section>
 
-  <section id="app" class="hidden">
-    <section class="panel">
-      <h2>Explore</h2>
-      <div class="actions" id="categories">
-        <button class="secondary" data-cat="Todas">Todas</button>
-        <button class="secondary" data-cat="Tatuagens">Tatuagens</button>
-        <button class="secondary" data-cat="Desenhos">Desenhos</button>
-        <button class="secondary" data-cat="Anime">Anime</button>
-        <button class="secondary" data-cat="Paisagens">Paisagens</button>
-        <button class="secondary" data-cat="Outros">Outros</button>
-      </div>
-    </section>
+<section id="home" class="page active">
+<h2>Início</h2>
+<div id="homePosts">Carregando publicações...</div>
+</section>
 
-    <section id="uploadPanel" class="panel hidden">
-      <h3>Publicar imagens</h3>
-      <input id="photoTitle" placeholder="Descrição da imagem">
-      <select id="photoCategory">
-        <option>Tatuagens</option>
-        <option>Desenhos</option>
-        <option>Anime</option>
-        <option>Paisagens</option>
-        <option>Outros</option>
-      </select>
-      <input id="photoFiles" type="file" accept="image/*" multiple>
-      <button id="publishBtn">Publicar</button>
-      <p id="uploadMessage" class="small"></p>
-    </section>
+<section id="explore" class="page">
+<h2>Explorar</h2>
+<input id="search" placeholder="Pesquisar publicações..." />
+<div id="explorePosts"></div>
+</section>
 
-    <section class="panel">
-      <h3>Meu perfil</h3>
-      <p id="myName"></p>
-      <input id="newName" placeholder="Seu nome">
-      <label>Foto do perfil</label>
-      <input id="profileFile" type="file" accept="image/*">
-      <button id="saveProfileBtn">Salvar perfil</button>
-      <p id="profileMessage" class="small"></p>
-    </section>
+<section id="favorites" class="page">
+<h2>❤️ Meus favoritos</h2>
+<div id="favoritePosts"></div>
+</section>
 
-    <h2>Imagens</h2>
-    <div id="gallery"></div>
-    <button id="moreBtn" class="secondary">Carregar mais</button>
-    <p id="galleryMessage" class="small"></p>
-  </section>
+<section id="publish" class="page">
+<h2>Publicar uma foto</h2>
+<div class="panel">
+<label>Escolha uma imagem</label>
+<input type="file" id="photoFile" accept="image/*">
+<img id="preview" alt="Prévia da imagem">
+<textarea id="description" placeholder="Escreva uma descrição..."></textarea>
+<input id="category" placeholder="Categoria (ex: tatuagem, desenho...)">
+<button id="publishButton">Publicar foto</button>
+<p id="uploadStatus" class="muted"></p>
+</div>
+</section>
+
+<section id="profile" class="page">
+<h2>Minha conta</h2>
+<div class="panel">
+<input id="email" type="email" placeholder="Seu e-mail">
+<input id="password" type="password" placeholder="Sua senha">
+<button id="registerButton">Criar conta</button>
+<button id="loginButton">Entrar</button>
+<button id="googleButton">Entrar com Google</button>
+<button id="logoutButton">Sair da conta</button>
+<p id="authStatus" class="muted"></p>
+</div>
+</section>
+
+<section id="admin" class="page">
+<h2>⚙️ Administração</h2>
+<div class="panel">
+<p id="adminStatus">Área administrativa.</p>
+<div id="adminPosts"></div>
+</div>
+</section>
+
 </main>
 
-<div id="commentsBox" class="hidden">
-  <div id="commentsContent">
-    <h3>Comentários</h3>
-    <div id="commentsList"></div>
-    <textarea id="commentText" placeholder="Escreva um comentário..."></textarea>
-    <button id="sendCommentBtn">Enviar</button>
-    <button id="closeCommentsBtn" class="secondary">Fechar</button>
-  </div>
-</div>
+<footer>Pinzy 💜</footer>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup,
-  signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  onAuthStateChanged, signOut, updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+ getAuth,
+ GoogleAuthProvider,
+ signInWithPopup,
+ createUserWithEmailAndPassword,
+ signInWithEmailAndPassword,
+ signOut,
+ onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 import {
-  getFirestore, doc, setDoc, getDoc, addDoc,
-  collection, query, orderBy, limit, startAfter,
-  getDocs, updateDoc, arrayUnion, arrayRemove,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+ getFirestore,
+ collection,
+ addDoc,
+ onSnapshot,
+ query,
+ orderBy,
+ serverTimestamp,
+ doc,
+ updateDoc,
+ arrayUnion,
+ arrayRemove,
+ deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 import {
-  getStorage, ref, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+ getStorage,
+ ref,
+ uploadBytes,
+ getDownloadURL,
+ deleteObject
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
-/* COLOQUE AQUI OS DADOS DO SEU FIREBASE */
+// COLOQUE A CONFIGURAÇÃO DO SEU FIREBASE AQUI
 const firebaseConfig = {
-  apiKey: "COLOQUE_SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_PROJETO.firebasestorage.app",
-  messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-  appId: "SEU_APP_ID"
+ apiKey: "COLOQUE_SUA_API_KEY",
+ authDomain: "COLOQUE_SEU_AUTH_DOMAIN",
+ projectId: "COLOQUE_SEU_PROJECT_ID",
+ storageBucket: "COLOQUE_SEU_STORAGE_BUCKET",
+ messagingSenderId: "COLOQUE_SEU_SENDER_ID",
+ appId: "COLOQUE_SEU_APP_ID"
 };
 
-const appFirebase = initializeApp(firebaseConfig);
-const auth = getAuth(appFirebase);
-const db = getFirestore(appFirebase);
-const storage = getStorage(appFirebase);
+// COLOQUE SEU E-MAIL DE ADMINISTRADOR AQUI
+const ADMIN_EMAIL = "SEU_EMAIL@gmail.com";
 
-let user = null;
-let lastDocument = null;
-let currentCategory = "Todas";
-let currentPhotoId = null;
-let photos = [];
-let loading = false;
-let hasMore = true;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const googleProvider = new GoogleAuthProvider();
 
 const $ = id => document.getElementById(id);
 
-function message(id, text) {
-  $(id).textContent = text;
+let currentUser = null;
+let allPosts = [];
+
+function isAdmin(){
+ return currentUser &&
+ currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 }
 
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[char]);
-}
+// NAVEGAÇÃO
+document.querySelectorAll("[data-page]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  const page = button.dataset.page;
 
-/* LOGIN GOOGLE */
-$("googleBtn").addEventListener("click", async () => {
-  try {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-  } catch (error) {
-    message("loginMessage", error.message);
-  }
-});
-
-/* LOGIN E CADASTRO */
-$("loginBtn").addEventListener("click", async () => {
-  try {
-    await signInWithEmailAndPassword(
-      auth, $("email").value.trim(), $("password").value
-    );
-  } catch (error) {
-    message("loginMessage", error.message);
-  }
-});
-
-$("registerBtn").addEventListener("click", async () => {
-  try {
-    await createUserWithEmailAndPassword(
-      auth, $("email").value.trim(), $("password").value
-    );
-  } catch (error) {
-    message("loginMessage", error.message);
-  }
-});
-
-$("logoutBtn").addEventListener("click", () => signOut(auth));
-
-/* ESTADO DO USUÁRIO */
-onAuthStateChanged(auth, async currentUser => {
-  user = currentUser;
-
-  if (!user) {
-    $("loginPanel").classList.remove("hidden");
-    $("app").classList.add("hidden");
-    $("userInfo").classList.add("hidden");
-    $("uploadOpen").classList.add("hidden");
-    return;
+  if(page === "admin" && !isAdmin()){
+   alert("Área exclusiva do administrador.");
+   return;
   }
 
-  $("loginPanel").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  $("userInfo").classList.remove("hidden");
-  $("uploadOpen").classList.remove("hidden");
-
-  $("avatar").src = user.photoURL || "https://placehold.co/100";
-  $("myName").textContent = user.displayName || user.email;
-  $("newName").value = user.displayName || "";
-
-  await setDoc(doc(db, "users", user.uid), {
-    uid: user.uid,
-    name: user.displayName || user.email,
-    email: user.email,
-    photoURL: user.photoURL || "",
-    updatedAt: serverTimestamp()
-  }, { merge: true });
-
-  resetGallery();
-});
-
-/* ABRIR PUBLICAÇÃO */
-$("uploadOpen").addEventListener("click", () => {
-  $("uploadPanel").classList.toggle("hidden");
-});
-
-/* PUBLICAR FOTOS */
-$("publishBtn").addEventListener("click", async () => {
-  const files = [...$("photoFiles").files];
-  const title = $("photoTitle").value.trim();
-  const category = $("photoCategory").value;
-
-  if (!files.length) {
-    message("uploadMessage", "Escolha pelo menos uma imagem.");
-    return;
-  }
-
-  if (files.length > 20) {
-    message("uploadMessage", "Escolha no máximo 20 imagens por vez.");
-    return;
-  }
-
-  try {
-    $("publishBtn").disabled = true;
-
-    for (const file of files) {
-      if (!file.type.startsWith("image/")) continue;
-      if (file.size > 10 * 1024 * 1024) {
-        throw new Error("Cada imagem deve ter no máximo 10 MB.");
-      }
-
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const storagePath =
-        `photos/${user.uid}/${Date.now()}_${safeName}`;
-
-      const storageRef = ref(storage, storagePath);
-      await uploadBytes(storageRef, file);
-      const imageUrl = await getDownloadURL(storageRef);
-
-      await addDoc(collection(db, "photos"), {
-        uid: user.uid,
-        authorName: user.displayName || user.email,
-        authorPhoto: user.photoURL || "",
-        title,
-        category,
-        imageUrl,
-        storagePath,
-        likes: [],
-        createdAt: serverTimestamp()
-      });
-    }
-
-    $("photoFiles").value = "";
-    $("photoTitle").value = "";
-    message("uploadMessage", "Imagens publicadas!");
-    resetGallery();
-  } catch (error) {
-    message("uploadMessage", "Erro: " + error.message);
-  } finally {
-    $("publishBtn").disabled = false;
-  }
-});
-
-/* CARREGAR FOTOS COM PAGINAÇÃO */
-async function loadPhotos() {
-  if (loading || !hasMore) return;
-  loading = true;
-  message("galleryMessage", "Carregando imagens...");
-
-  try {
-    let q;
-
-    if (lastDocument) {
-      q = query(
-        collection(db, "photos"),
-        orderBy("createdAt", "desc"),
-        startAfter(lastDocument),
-        limit(24)
-      );
-    } else {
-      q = query(
-        collection(db, "photos"),
-        orderBy("createdAt", "desc"),
-        limit(24)
-      );
-    }
-
-    const result = await getDocs(q);
-
-    if (result.empty) {
-      hasMore = false;
-    } else {
-      lastDocument = result.docs[result.docs.length - 1];
-      photos.push(...result.docs.map(item => ({
-        id: item.id,
-        ...item.data()
-      })));
-      if (result.docs.length < 24) hasMore = false;
-    }
-
-    renderGallery();
-    message("galleryMessage", photos.length ? "" : "Ainda não há imagens.");
-  } catch (error) {
-    message("galleryMessage", "Erro ao carregar: " + error.message);
-  } finally {
-    loading = false;
-    $("moreBtn").classList.toggle("hidden", !hasMore);
-  }
-}
-
-function resetGallery() {
-  photos = [];
-  lastDocument = null;
-  hasMore = true;
-  $("gallery").innerHTML = "";
-  loadPhotos();
-}
-
-$("moreBtn").addEventListener("click", loadPhotos);
-
-/* PESQUISA E CATEGORIAS */
-$("search").addEventListener("input", renderGallery);
-
-$("categories").addEventListener("click", event => {
-  const button = event.target.closest("button[data-cat]");
-  if (!button) return;
-  currentCategory = button.dataset.cat;
-  renderGallery();
-});
-
-function renderGallery() {
-  const search = $("search").value.toLowerCase().trim();
-
-  const filtered = photos.filter(photo => {
-    const text = `${photo.title || ""} ${photo.authorName || ""} ${photo.category || ""}`.toLowerCase();
-    const matchesSearch = text.includes(search);
-    const matchesCategory =
-      currentCategory === "Todas" || photo.category === currentCategory;
-    return matchesSearch && matchesCategory;
+  document.querySelectorAll(".page").forEach(section=>{
+   section.classList.remove("active");
   });
 
-  $("gallery").innerHTML = filtered.map(photo => {
-    const likes = Array.isArray(photo.likes) ? photo.likes : [];
-    const liked = user && likes.includes(user.uid);
+  $(page).classList.add("active");
 
-    return `
-      <article class="photo">
-        <img src="${escapeHTML(photo.imageUrl)}" alt="${escapeHTML(photo.title || "Imagem")}" loading="lazy">
-        <div class="photo-info">
-          <strong>${escapeHTML(photo.title || "Sem descrição")}</strong>
-          <p class="small">${escapeHTML(photo.category || "Outros")}</p>
-          <p class="small">Por ${escapeHTML(photo.authorName || "Usuário")}</p>
-          <div class="actions">
-            <button data-like="${photo.id}" class="${liked ? "" : "secondary"}">
-              ${liked ? "♥" : "♡"} ${likes.length}
-            </button>
-            <button class="secondary" data-comment="${photo.id}">Comentários</button>
-          </div>
-        </div>
-      </article>`;
-  }).join("");
-
-  $("gallery").querySelectorAll("[data-like]").forEach(button => {
-    button.addEventListener("click", () => toggleLike(button.dataset.like));
-  });
-
-  $("gallery").querySelectorAll("[data-comment]").forEach(button => {
-    button.addEventListener("click", () => openComments(button.dataset.comment));
-  });
-}
-
-/* CURTIDAS */
-async function toggleLike(photoId) {
-  if (!user) return;
-
-  try {
-    const photoRef = doc(db, "photos", photoId);
-    const photo = photos.find(item => item.id === photoId);
-    if (!photo) return;
-
-    const likes = Array.isArray(photo.likes) ? photo.likes : [];
-
-    if (likes.includes(user.uid)) {
-      await updateDoc(photoRef, { likes: arrayRemove(user.uid) });
-    } else {
-      await updateDoc(photoRef, { likes: arrayUnion(user.uid) });
-    }
-
-    const updated = await getDoc(photoRef);
-    photo.likes = updated.data().likes || [];
-    renderGallery();
-  } catch (error) {
-    alert("Não foi possível curtir: " + error.message);
-  }
-}
-
-/* COMENTÁRIOS */
-async function openComments(photoId) {
-  currentPhotoId = photoId;
-  $("commentsBox").classList.remove("hidden");
-  $("commentsList").textContent = "Carregando...";
-
-  try {
-    const q = query(
-      collection(db, "photos", photoId, "comments"),
-      orderBy("createdAt", "asc"),
-      limit(100)
-    );
-
-    const result = await getDocs(q);
-
-    $("commentsList").innerHTML = result.docs.map(item => {
-      const comment = item.data();
-      return `<p><strong>${escapeHTML(comment.name || "Usuário")}</strong><br>${escapeHTML(comment.text || "")}</p>`;
-    }).join("") || "<p>Ainda não há comentários.</p>";
-  } catch (error) {
-    $("commentsList").textContent = "Erro ao carregar comentários.";
-  }
-}
-
-$("sendCommentBtn").addEventListener("click", async () => {
-  const text = $("commentText").value.trim();
-  if (!text || !currentPhotoId) return;
-
-  try {
-    await addDoc(
-      collection(db, "photos", currentPhotoId, "comments"),
-      {
-        uid: user.uid,
-        name: user.displayName || user.email,
-        text,
-        createdAt: serverTimestamp()
-      }
-    );
-
-    $("commentText").value = "";
-    openComments(currentPhotoId);
-  } catch (error) {
-    alert("Erro ao comentar: " + error.message);
-  }
+  if(page === "favorites") renderFavorites();
+  if(page === "admin") renderAdmin();
+  if(page === "explore") renderPosts();
+ });
 });
 
-function closeComments() {
-  $("commentsBox").classList.add("hidden");
-  currentPhotoId = null;
+// CADASTRO
+$("registerButton").onclick = async ()=>{
+ try{
+  await createUserWithEmailAndPassword(
+   auth,
+   $("email").value.trim(),
+   $("password").value
+  );
+  $("authStatus").textContent = "Conta criada!";
+ }catch(error){
+  $("authStatus").textContent = error.message;
+ }
+};
+
+// LOGIN
+$("loginButton").onclick = async ()=>{
+ try{
+  await signInWithEmailAndPassword(
+   auth,
+   $("email").value.trim(),
+   $("password").value
+  );
+  $("authStatus").textContent = "Login realizado!";
+ }catch(error){
+  $("authStatus").textContent = error.message;
+ }
+};
+
+// LOGIN GOOGLE
+$("googleButton").onclick = async ()=>{
+ try{
+  await signInWithPopup(auth,googleProvider);
+ }catch(error){
+  $("authStatus").textContent = error.message;
+ }
+};
+
+// SAIR
+$("logoutButton").onclick = async ()=>{
+ try{
+  await signOut(auth);
+ }catch(error){
+  alert(error.message);
+ }
+};
+
+// ESTADO DA CONTA
+onAuthStateChanged(auth,user=>{
+ currentUser = user;
+
+ $("userInfo").textContent = user
+  ? "Conectado: " + user.email
+  : "Você não está conectado.";
+
+ $("logoutButton").style.display = user ? "inline-block" : "none";
+
+ renderPosts();
+ renderFavorites();
+});
+
+// PRÉVIA DA FOTO
+$("photoFile").addEventListener("change",()=>{
+ const file = $("photoFile").files[0];
+
+ if(!file){
+  $("preview").style.display = "none";
+  return;
+ }
+
+ $("preview").src = URL.createObjectURL(file);
+ $("preview").style.display = "block";
+});
+
+// PUBLICAR FOTO
+$("publishButton").onclick = async ()=>{
+ if(!currentUser){
+  alert("Entre na sua conta primeiro.");
+  return;
+ }
+
+ const file = $("photoFile").files[0];
+ const description = $("description").value.trim();
+ const category = $("category").value.trim();
+
+ if(!file){
+  alert("Escolha uma foto.");
+  return;
+ }
+
+ if(!file.type.startsWith("image/")){
+  alert("Escolha um arquivo de imagem.");
+  return;
+ }
+
+ if(file.size > 10 * 1024 * 1024){
+  alert("A imagem deve ter até 10 MB.");
+  return;
+ }
+
+ $("publishButton").disabled = true;
+ $("uploadStatus").textContent = "Enviando foto...";
+
+ try{
+  const fileName = Date.now() + "_" + file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+  const imageRef = ref(storage,"posts/" + currentUser.uid + "/" + fileName);
+
+  await uploadBytes(imageRef,file);
+  const imageURL = await getDownloadURL(imageRef);
+
+  await addDoc(collection(db,"posts"),{
+   imageURL,
+   storagePath: imageRef.fullPath,
+   description,
+   category,
+   userId: currentUser.uid,
+   userEmail: currentUser.email,
+   likedBy: [],
+   createdAt: serverTimestamp()
+  });
+
+  $("description").value = "";
+  $("category").value = "";
+  $("photoFile").value = "";
+  $("preview").style.display = "none";
+  $("uploadStatus").textContent = "Foto publicada com sucesso!";
+
+ }catch(error){
+  $("uploadStatus").textContent = "Erro: " + error.message;
+ }finally{
+  $("publishButton").disabled = false;
+ }
+};
+
+// CARREGAR PUBLICAÇÕES
+const postsQuery = query(
+ collection(db,"posts"),
+ orderBy("createdAt","desc")
+);
+
+onSnapshot(postsQuery,snapshot=>{
+ allPosts = snapshot.docs.map(item=>({
+  id:item.id,
+  ...item.data()
+ }));
+
+ renderPosts();
+ renderFavorites();
+ if(isAdmin()) renderAdmin();
+
+},error=>{
+ $("homePosts").textContent = "Erro ao carregar: " + error.message;
+});
+
+// CRIAR CARTÃO
+function createPostCard(post){
+ const article = document.createElement("article");
+ article.className = "post";
+
+ const image = document.createElement("img");
+ image.src = post.imageURL;
+ image.alt = post.description || "Publicação";
+ image.loading = "lazy";
+
+ const description = document.createElement("p");
+ description.textContent = post.description || "";
+
+ const category = document.createElement("small");
+ category.textContent = "Categoria: " + (post.category || "Geral");
+
+ const author = document.createElement("p");
+ author.className = "muted";
+ author.textContent = "Publicado por: " + (post.userEmail || "Usuário");
+
+ const actions = document.createElement("div");
+ actions.className = "actions";
+
+ const likeButton = document.createElement("button");
+ const liked = currentUser &&
+ (post.likedBy || []).includes(currentUser.uid);
+
+ likeButton.textContent = (liked ? "❤️" : "🤍") +
+  " Curtir (" + (post.likedBy || []).length + ")";
+
+ likeButton.onclick = ()=>toggleLike(post.id);
+
+ actions.append(likeButton);
+ article.append(image,description,category,author,actions);
+
+ return article;
 }
 
-$("closeCommentsBtn").addEventListener("click", closeComments);
+// RENDERIZAR INÍCIO E EXPLORAR
+function renderPosts(){
+ const home = $("homePosts");
+ const explore = $("explorePosts");
 
-/* PERFIL */
-$("saveProfileBtn").addEventListener("click", async () => {
-  try {
-    const name = $("newName").value.trim();
-    const file = $("profileFile").files[0];
+ if(!home || !explore) return;
 
-    if (name) {
-      await updateProfile(user, { displayName: name });
+ home.replaceChildren();
+ explore.replaceChildren();
+
+ const search = ($("search").value || "").toLowerCase();
+
+ const filtered = allPosts.filter(post=>{
+  const text = (
+   (post.description || "") + " " +
+   (post.category || "") + " " +
+   (post.userEmail || "")
+  ).toLowerCase();
+
+  return text.includes(search);
+ });
+
+ if(filtered.length === 0){
+  home.textContent = "Ainda não há publicações.";
+  explore.textContent = "Nenhuma publicação encontrada.";
+  return;
+ }
+
+ filtered.forEach(post=>{
+  home.appendChild(createPostCard(post));
+  explore.appendChild(createPostCard(post));
+ });
+}
+
+$("search").addEventListener("input",renderPosts);
+
+// CURTIR
+async function toggleLike(postId){
+ if(!currentUser){
+  alert("Entre na sua conta para curtir.");
+  return;
+ }
+
+ const post = allPosts.find(item=>item.id === postId);
+ if(!post) return;
+
+ const liked = (post.likedBy || []).includes(currentUser.uid);
+
+ try{
+  await updateDoc(doc(db,"posts",postId),{
+   likedBy: liked
+    ? arrayRemove(currentUser.uid)
+    : arrayUnion(currentUser.uid)
+  });
+ }catch(error){
+  alert("Não foi possível curtir: " + error.message);
+ }
+}
+
+// FAVORITOS
+function renderFavorites(){
+ const container = $("favoritePosts");
+ if(!container) return;
+
+ container.replaceChildren();
+
+ if(!currentUser){
+  container.textContent = "Entre na sua conta para ver seus favoritos.";
+  return;
+ }
+
+ const favorites = allPosts.filter(post=>
+  (post.likedBy || []).includes(currentUser.uid)
+ );
+
+ if(favorites.length === 0){
+  container.textContent = "Você ainda não tem favoritos.";
+  return;
+ }
+
+ favorites.forEach(post=>{
+  container.appendChild(createPostCard(post));
+ });
+}
+
+// ADMINISTRAÇÃO
+function renderAdmin(){
+ const container = $("adminPosts");
+ container.replaceChildren();
+
+ if(!isAdmin()){
+  $("adminStatus").textContent = "Acesso não autorizado.";
+  return;
+ }
+
+ $("adminStatus").textContent =
+  "Painel administrativo. Publicações: " + allPosts.length;
+
+ allPosts.forEach(post=>{
+  const item = document.createElement("div");
+  item.className = "panel";
+
+  const description = document.createElement("p");
+  description.textContent = post.description || "Sem descrição";
+
+  const author = document.createElement("small");
+  author.textContent = post.userEmail || "Usuário";
+
+  const removeButton = document.createElement("button");
+  removeButton.textContent = "Excluir publicação";
+
+  removeButton.onclick = async ()=>{
+   if(!confirm("Deseja excluir esta publicação?")) return;
+
+   try{
+    await deleteDoc(doc(db,"posts",post.id));
+
+    if(post.storagePath){
+     try{
+      await deleteObject(ref(storage,post.storagePath));
+     }catch(error){
+      console.warn("Arquivo não encontrado:",error);
+     }
     }
 
-    let photoURL = user.photoURL || "";
+   }catch(error){
+    alert("Erro ao excluir: " + error.message);
+   }
+  };
 
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        throw new Error("Escolha uma imagem.");
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error("A foto deve ter no máximo 5 MB.");
-      }
+  item.append(description,author,removeButton);
+  container.appendChild(item);
+ });
+}
 
-      const path = `profiles/${user.uid}/avatar`;
-      const imageRef = ref(storage, path);
-      await uploadBytes(imageRef, file);
-      photoURL = await getDownloadURL(imageRef);
-      await updateProfile(user, { photoURL });
-    }
-
-    await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
-      name: user.displayName || user.email,
-      email: user.email,
-      photoURL,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-
-    $("avatar").src = photoURL || "https://placehold.co/100";
-    $("myName").textContent = user.displayName || user.email;
-    message("profileMessage", "Perfil atualizado!");
-  } catch (error) {
-    message("profileMessage", "Erro: " + error.message);
-  }
-});
 </script>
 </body>
 </html>
